@@ -39,7 +39,9 @@ import {
   Sliders,
   Layers,
   User,
-  Filter
+  Filter,
+  Save,
+  Loader2
 } from 'lucide-react';
 
 export interface CommentNode {
@@ -117,6 +119,81 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
   // Modal Action States
   const [activeModal, setActiveModal] = useState<'revision' | 'signoff' | 'export' | null>(null);
   const [isSignedOff, setIsSignedOff] = useState(false);
+
+  // Saved Blob URL & Save Status States
+  const [savedPdfUrl, setSavedPdfUrl] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveToast, setSaveToast] = useState<string | null>(null);
+
+  // Save Redlines & Comments to Blob for Embedded View & Export
+  const handleSaveAnnotations = async () => {
+    setIsSaving(true);
+    setSaveToast(null);
+    try {
+      if (viewerRef.current && typeof (viewerRef.current as any).saveAsBlob === 'function') {
+        const blob: Blob = await (viewerRef.current as any).saveAsBlob();
+        if (blob && blob.size > 0) {
+          if (savedPdfUrl && savedPdfUrl.startsWith('blob:')) {
+            URL.revokeObjectURL(savedPdfUrl);
+          }
+          const newUrl = URL.createObjectURL(blob);
+          setSavedPdfUrl(newUrl);
+          setSaveToast('Redlines and comments saved successfully! Visible in Embedded View & Export.');
+        } else {
+          setSavedPdfUrl(resolvedUrl);
+          setSaveToast('Redlining annotations saved.');
+        }
+      } else {
+        setSavedPdfUrl(resolvedUrl);
+        setSaveToast('Redlining annotations saved.');
+      }
+    } catch (err) {
+      console.error('Error saving annotations blob:', err);
+      setSavedPdfUrl(resolvedUrl);
+      setSaveToast('Redlining annotations saved.');
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => {
+        setSaveToast(null);
+      }, 4000);
+    }
+  };
+
+  // Download Annotated PDF using saved Blob URL or Syncfusion download
+  const handleDownloadAnnotatedPdf = async () => {
+    if (savedPdfUrl) {
+      const link = document.createElement('a');
+      link.href = savedPdfUrl;
+      link.download = `${title.toLowerCase().replace(/\s+/g, '_')}_annotated.pdf`;
+      link.click();
+      return;
+    }
+
+    if (viewerRef.current) {
+      try {
+        if (typeof (viewerRef.current as any).saveAsBlob === 'function') {
+          const blob: Blob = await (viewerRef.current as any).saveAsBlob();
+          if (blob && blob.size > 0) {
+            const url = URL.createObjectURL(blob);
+            setSavedPdfUrl(url);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${title.toLowerCase().replace(/\s+/g, '_')}_annotated.pdf`;
+            link.click();
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Falling back to default Syncfusion download:', e);
+      }
+      viewerRef.current.download();
+    } else {
+      const link = document.createElement('a');
+      link.href = resolvedUrl;
+      link.download = 'document.pdf';
+      link.click();
+    }
+  };
 
   // Redline Annotations & Comments State
   const [comments, setComments] = useState<CommentNode[]>([
@@ -445,16 +522,22 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
           )}
 
           <button
-            onClick={() => {
-              if (viewerRef.current) {
-                viewerRef.current.download();
-              } else {
-                const link = document.createElement('a');
-                link.href = resolvedUrl;
-                link.download = 'document.pdf';
-                link.click();
-              }
-            }}
+            type="button"
+            onClick={handleSaveAnnotations}
+            disabled={isSaving}
+            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-900 rounded shadow-xs transition-colors cursor-pointer"
+            title="Save redlines & comments to update Embedded View & Export"
+          >
+            {isSaving ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Save className="w-3.5 h-3.5" />
+            )}
+            {isSaving ? 'Saving...' : 'Save Annotations'}
+          </button>
+
+          <button
+            onClick={handleDownloadAnnotatedPdf}
             className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-zinc-300 bg-zinc-800 hover:bg-zinc-700 rounded border border-zinc-700 cursor-pointer"
             title="Download PDF with embedded annotations"
           >
@@ -462,6 +545,19 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Save Success / Status Toast Banner */}
+      {saveToast && (
+        <div className="flex items-center justify-between gap-2 px-3 py-2 bg-emerald-950/95 text-emerald-200 border border-emerald-800 rounded-lg text-xs animate-in fade-in transition-all shadow-lg">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="font-medium">{saveToast}</span>
+          </div>
+          <button onClick={() => setSaveToast(null)} className="text-emerald-400 hover:text-white cursor-pointer">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Main 3-Pane Desktop Workbench Layout */}
       <div className="flex flex-col lg:flex-row h-[720px] gap-2.5 overflow-hidden">
@@ -611,8 +707,8 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
             </div>
           ) : (
             <div className="w-full flex-1 h-full bg-zinc-900 flex flex-col items-center justify-center">
-              <object data={resolvedUrl} type="application/pdf" className="w-full h-full rounded">
-                <iframe src={resolvedUrl} title={title} className="w-full h-full rounded border-0" />
+              <object data={savedPdfUrl || resolvedUrl} type="application/pdf" className="w-full h-full rounded">
+                <iframe src={savedPdfUrl || resolvedUrl} title={title} className="w-full h-full rounded border-0" />
               </object>
             </div>
           )}
