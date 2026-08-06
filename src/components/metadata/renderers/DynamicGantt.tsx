@@ -82,21 +82,30 @@ export const DynamicGantt: React.FC<DynamicGanttProps> = ({ data, config }) => {
   const statusTemplate = (props: any) => {
     const status = props.status || (props.progress === 100 ? 'Completed' : props.progress > 0 ? 'In Progress' : 'Open');
     
-    let badgeStyle = 'bg-zinc-100 text-zinc-700 border-zinc-300 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700';
+    let colorClasses = 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
+    let dotColor = 'bg-slate-400';
+
     if (status === 'Completed') {
-      badgeStyle = 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/70 dark:text-emerald-300 dark:border-emerald-800';
+      colorClasses = 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-800';
+      dotColor = 'bg-emerald-500';
     } else if (status === 'In Progress') {
-      badgeStyle = 'bg-blue-50 text-blue-700 border-blue-300 dark:bg-blue-950/70 dark:text-blue-300 dark:border-blue-800';
+      colorClasses = 'bg-blue-50 text-blue-700 border-blue-300 dark:bg-blue-950/80 dark:text-blue-300 dark:border-blue-800';
+      dotColor = 'bg-blue-500';
     } else if (status === 'Open' || status === 'Planning') {
-      badgeStyle = 'bg-rose-50 text-rose-700 border-rose-300 dark:bg-rose-950/70 dark:text-rose-300 dark:border-rose-800';
+      colorClasses = 'bg-rose-50 text-rose-700 border-rose-300 dark:bg-rose-950/80 dark:text-rose-300 dark:border-rose-800';
+      dotColor = 'bg-rose-500';
     } else if (status === 'On Hold') {
-      badgeStyle = 'bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800';
+      colorClasses = 'bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-950/80 dark:text-amber-300 dark:border-amber-800';
+      dotColor = 'bg-amber-500';
     }
 
     return (
-      <span className={`inline-flex items-center justify-center px-2 py-0.5 text-[11px] font-medium rounded-md border ${badgeStyle}`}>
-        {status}
-      </span>
+      <div className="flex items-center h-full min-w-0">
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border leading-none shrink-0 shadow-2xs ${colorClasses}`}>
+          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColor}`} />
+          <span>{status}</span>
+        </span>
+      </div>
     );
   };
 

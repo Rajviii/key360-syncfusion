@@ -21,9 +21,9 @@ export const Header: React.FC = () => {
         <div>
           <h1 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
             KEY360 Enterprise Portal
-            <span className="text-[10px] font-semibold px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-800">
+            {/* <span className="text-[10px] font-semibold px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-800">
               Syncfusion Dynamic Engine
-            </span>
+            </span> */}
           </h1>
           {/* <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Metadata-Driven Architecture with .NET & MCP API Adapters</p> */}
         </div>
