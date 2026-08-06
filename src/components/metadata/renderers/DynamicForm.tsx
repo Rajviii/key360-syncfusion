@@ -39,6 +39,32 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     setTimeout(() => setSubmitted(false), 3000);
   };
 
+  const getFormOptionsForField = (field: FieldSchema) => {
+    const list: { label: string; value: string }[] = [];
+    const seen = new Set<string>();
+
+    if (field.options && field.options.length > 0) {
+      field.options.forEach(opt => {
+        const label = typeof opt === 'string' ? opt : String(opt.label || opt.value || '');
+        const val = typeof opt === 'string' ? opt : String(opt.value || opt.label || '');
+        if (val && !seen.has(val)) {
+          seen.add(val);
+          list.push({ label, value: val });
+        }
+      });
+    }
+
+    if (initialValues && field.key && initialValues[field.key]) {
+      const strVal = String(initialValues[field.key]);
+      if (strVal && !seen.has(strVal)) {
+        seen.add(strVal);
+        list.push({ label: strVal, value: strVal });
+      }
+    }
+
+    return list;
+  };
+
   return (
     <form onSubmit={handleSubmit} className="w-full bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-6 shadow-sm">
       <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800 mb-6">
@@ -56,6 +82,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {formFields.map(field => {
           const value = formData[field.key] ?? field.defaultValue ?? '';
+          const options = getFormOptionsForField(field);
 
           return (
             <div key={field.key} className={field.controlType === 'textarea' || field.controlType === 'fileupload' ? 'md:col-span-2' : ''}>
@@ -116,7 +143,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
               {field.controlType === 'select' && (
                 <DropDownListComponent
-                  dataSource={(field.options ?? []) as any[]}
+                  dataSource={options}
                   fields={{ text: 'label', value: 'value' }}
                   placeholder={`Select ${field.label}...`}
                   allowFiltering={true}
@@ -127,7 +154,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
               {field.controlType === 'multiselect' && (
                 <MultiSelectComponent
-                  dataSource={(field.options ?? []) as any[]}
+                  dataSource={options}
                   fields={{ text: 'label', value: 'value' }}
                   placeholder={`Select ${field.label}...`}
                   mode="Box"
@@ -138,7 +165,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
               {field.controlType === 'autocomplete' && (
                 <AutoCompleteComponent
-                  dataSource={(field.options ?? []) as any[]}
+                  dataSource={options}
                   fields={{ value: 'label' }}
                   placeholder={`Type to search ${field.label}...`}
                   value={value}

@@ -12,16 +12,7 @@ interface DevPanelProps {
 export const DevPanel: React.FC<DevPanelProps> = ({ metadata }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showJsonModal, setShowJsonModal] = useState(false);
-  const [activeProvider, setActiveProvider] = useState<'mock' | 'rest' | 'mcp'>(
-    ProviderFactory.getActiveProviderType()
-  );
   const [copied, setCopied] = useState(false);
-
-  const handleProviderToggle = (type: 'mock' | 'rest' | 'mcp') => {
-    ProviderFactory.setActiveProviderType(type);
-    setActiveProvider(type);
-    window.location.reload(); // Refresh query client data
-  };
 
   const handleCopyJson = () => {
     navigator.clipboard.writeText(JSON.stringify(metadata, null, 2));
@@ -58,26 +49,14 @@ export const DevPanel: React.FC<DevPanelProps> = ({ metadata }) => {
             </button>
           </div>
 
-          {/* Dynamic Provider Selector */}
-          <div className="space-y-1.5">
-            <label className="text-[11px] text-zinc-400 flex items-center gap-1.5">
-              <Database className="w-3.5 h-3.5 text-amber-400" /> Dynamic API Provider:
-            </label>
-            <div className="grid grid-cols-3 gap-1 bg-zinc-900 p-1 rounded-lg border border-zinc-800">
-              {(['mock', 'rest', 'mcp'] as const).map(p => (
-                <button
-                  key={p}
-                  onClick={() => handleProviderToggle(p)}
-                  className={`py-1 text-center font-semibold rounded text-[11px] transition-colors cursor-pointer ${
-                    activeProvider === p
-                      ? 'bg-blue-600 text-white'
-                      : 'text-zinc-400 hover:text-zinc-200'
-                  }`}
-                >
-                  {p.toUpperCase()}
-                </button>
-              ))}
+          {/* Dynamic Provider Status */}
+          <div className="bg-zinc-900/90 p-2.5 rounded-lg border border-zinc-800 flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-zinc-300 font-semibold text-[11px]">
+              <Database className="w-3.5 h-3.5 text-amber-400" /> API Provider:
             </div>
+            <span className="px-2 py-0.5 bg-blue-950 text-blue-400 border border-blue-800 rounded font-bold text-[10px] uppercase">
+              Mock Engine (Active)
+            </span>
           </div>
 
           {/* Telemetry Metrics */}

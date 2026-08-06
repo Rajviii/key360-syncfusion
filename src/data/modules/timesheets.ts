@@ -34,7 +34,8 @@ export const timesheetsMetadata: ModuleMetadata = {
         { label: 'Cloud Migration Phase 2', value: 'Cloud Migration Phase 2' },
         { label: 'Syncfusion Dynamic UI POC', value: 'Syncfusion Dynamic UI POC' },
         { label: 'Customer Mobile App v3', value: 'Customer Mobile App v3' },
-        { label: 'Cybersecurity SOC Upgrade', value: 'Cybersecurity SOC Upgrade' }
+        { label: 'Cybersecurity SOC Upgrade', value: 'Cybersecurity SOC Upgrade' },
+        { label: 'Data Warehouse Snowflake Sync', value: 'Data Warehouse Snowflake Sync' }
       ], showInGrid: true, showInForm: true, groupable: true
     },
     { key: 'date', label: 'Work Date', controlType: 'date', showInGrid: true, showInForm: true, format: 'yyyy-MM-dd' },
