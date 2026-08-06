@@ -131,11 +131,10 @@ export const Sidebar: React.FC = () => {
       <div className="space-y-0.5">
         <div
           title={item.description || item.name}
-          className={`group flex items-center justify-between px-2.5 py-1.5 rounded-lg transition-all text-xs font-medium cursor-pointer ${
-            isActive
+          className={`group flex items-center justify-between px-2.5 py-1.5 rounded-lg transition-all text-xs font-medium cursor-pointer ${isActive
               ? 'bg-blue-600 text-white shadow-xs font-semibold'
               : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/70 dark:hover:bg-zinc-800/70'
-          }`}
+            }`}
           style={{ paddingLeft: `${Math.max(10, depth * 12 + 10)}px` }}
         >
           {item.href ? (
@@ -153,9 +152,8 @@ export const Sidebar: React.FC = () => {
           {hasChildren && (
             <button
               onClick={(e) => toggleItem(item.id, e)}
-              className={`p-0.5 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors ${
-                isActive ? 'text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200'
-              }`}
+              className={`p-0.5 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors ${isActive ? 'text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200'
+                }`}
             >
               {isOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
             </button>
@@ -193,11 +191,10 @@ export const Sidebar: React.FC = () => {
                 key={item.id}
                 href={item.href || '#'}
                 title={item.name}
-                className={`p-2 rounded-lg transition-all ${
-                  isActive
+                className={`p-2 rounded-lg transition-all ${isActive
                     ? 'bg-blue-600 text-white shadow-xs'
                     : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-800'
-                }`}
+                  }`}
               >
                 <Icon className="w-4 h-4" />
               </Link>

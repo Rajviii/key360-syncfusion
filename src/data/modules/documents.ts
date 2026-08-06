@@ -3,7 +3,7 @@ import { ModuleMetadata } from '@/types/metadata';
 export const documentsMockData = [
   {
     id: 'DOC-2026-001',
-    documentTitle: 'SSG Structural Engineering & Compliance Plan (Rev B)',
+    documentTitle: 'SSG Structural Engineering & Compliance Plan',
     project: 'AI ERP Modernization',
     author: 'Steven Golding',
     status: 'Under Review',
@@ -48,27 +48,27 @@ export const documentsMetadata: ModuleMetadata = {
   permissions: ['create', 'edit', 'delete', 'export', 'approve'],
   mockData: documentsMockData,
   customActions: [
-    {
-      id: 'action-new-revision',
-      label: 'New document revision with annotation file',
-      type: 'pdf-new-revision',
-      variant: 'primary',
-      permissionRequired: 'edit'
-    },
-    {
-      id: 'action-merge-signoff',
-      label: 'Merge Annotations & Sign-Off',
-      type: 'pdf-merge-signoff',
-      variant: 'success',
-      permissionRequired: 'approve'
-    },
-    {
-      id: 'action-export-redlines',
-      label: 'Export Redline Audit Log (JSON)',
-      type: 'pdf-export-annotations',
-      variant: 'secondary',
-      permissionRequired: 'export'
-    }
+    // {
+    //   id: 'action-new-revision',
+    //   label: 'New document revision with annotation file',
+    //   type: 'pdf-new-revision',
+    //   variant: 'primary',
+    //   permissionRequired: 'edit'
+    // },
+    // {
+    //   id: 'action-merge-signoff',
+    //   label: 'Merge Annotations & Sign-Off',
+    //   type: 'pdf-merge-signoff',
+    //   variant: 'success',
+    //   permissionRequired: 'approve'
+    // },
+    // {
+    //   id: 'action-export-redlines',
+    //   label: 'Export Redline Audit Log (JSON)',
+    //   type: 'pdf-export-annotations',
+    //   variant: 'secondary',
+    //   permissionRequired: 'export'
+    // }
   ],
   fields: [
     { key: 'id', label: 'Doc ID', controlType: 'text', showInGrid: true, showInForm: false, frozen: true, width: 130 },
@@ -98,7 +98,37 @@ export const documentsMetadata: ModuleMetadata = {
           id: 'w-pdf-redline',
           title: 'Document Review Inspection & Redlining',
           type: 'pdf',
-          pdfUrl: '/sample.pdf'
+          pdfUrl: '/sample.pdf',
+          pdfConfig: {
+            showLeftCommentsTree: true,
+            showRightPropertiesPanel: true,
+            groupBy: 'author',
+            enableVisibilityCheckboxes: true,
+            allowedStatuses: [
+              { label: 'Issued Comment', value: 'Issued' },
+              { label: 'Pending Review', value: 'Pending' },
+              { label: 'Approved', value: 'Approved' },
+              { label: 'Resolved', value: 'Resolved' }
+            ],
+            propertiesFields: [
+              { key: 'author', label: 'Author / Reviewer', controlType: 'text' },
+              { key: 'subject', label: 'Title / Subject', controlType: 'text' },
+              { key: 'borderWidth', label: 'Line Width (px)', controlType: 'number' },
+              { key: 'strokeColor', label: 'Annotation Color', controlType: 'colorpicker' },
+              {
+                key: 'status',
+                label: 'Comment Status',
+                controlType: 'select',
+                options: [
+                  { label: 'Issued Comment', value: 'Issued' },
+                  { label: 'Pending Review', value: 'Pending' },
+                  { label: 'Approved', value: 'Approved' },
+                  { label: 'Resolved', value: 'Resolved' }
+                ]
+              },
+              { key: 'comment', label: 'Comment Details', controlType: 'textarea' }
+            ]
+          }
         }
       ]
     },

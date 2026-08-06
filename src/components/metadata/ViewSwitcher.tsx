@@ -88,7 +88,7 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ metadata }) => {
             })}
           </div>
 
-          {metadata.permissions?.includes('create') && (
+          {/* {metadata.permissions?.includes('create') && (
             <button
               onClick={() => setIsFormOpen(true)}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition-colors cursor-pointer"
@@ -96,7 +96,7 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ metadata }) => {
               <FilePlus className="w-3.5 h-3.5" />
               Add Record
             </button>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -155,6 +155,7 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ metadata }) => {
       ) : activeView.type === 'pdf' ? (
         <DynamicPdfViewer
           pdfUrl={activeView.widgets?.[0]?.pdfUrl}
+          config={activeView.widgets?.[0]?.pdfConfig}
           customActions={activeView.customActions || metadata.customActions}
         />
       ) : activeView.type === 'form' ? (

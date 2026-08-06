@@ -105,6 +105,15 @@ export interface KanbanWidgetConfig {
   columns: { key: string; title: string }[];
 }
 
+export interface PdfReviewerWorkflowConfig {
+  showLeftCommentsTree?: boolean;
+  showRightPropertiesPanel?: boolean;
+  groupBy?: 'author' | 'date' | 'status' | 'pageNumber';
+  enableVisibilityCheckboxes?: boolean;
+  allowedStatuses?: SelectOption[];
+  propertiesFields?: FieldSchema[];
+}
+
 export interface WidgetConfig {
   id: string;
   title: string;
@@ -114,6 +123,7 @@ export interface WidgetConfig {
   chartConfig?: ChartWidgetConfig;
   ganttConfig?: GanttWidgetConfig;
   kanbanConfig?: KanbanWidgetConfig;
+  pdfConfig?: PdfReviewerWorkflowConfig;
   pdfUrl?: string;
   limit?: number;
 }
