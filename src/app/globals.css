@@ -1,26 +1,178 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #09090b;
+  --foreground: #f4f4f5;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ==========================================================================
+   Syncfusion Deep Dark Theme Overrides & Polish (Scoped strictly to .dark)
+   ========================================================================== */
+
+/* Syncfusion Component Container Transparency */
+.dark .e-grid,
+.dark .e-gantt,
+.dark .e-kanban,
+.dark .e-chart,
+.dark .e-form,
+.dark .e-control {
+  font-family: inherit !important;
+}
+
+/* DataGrid Headers, Toolbar, Rows, Search, Pager & Column Chooser in Dark Mode */
+.dark .e-grid,
+.dark .e-grid .e-gridheader,
+.dark .e-grid .e-headercell,
+.dark .e-grid .e-columnheader,
+.dark .e-grid .e-headercontent,
+.dark .e-grid .e-headertext {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+  border-color: #27272a !important;
+}
+
+.dark .e-grid .e-toolbar,
+.dark .e-grid .e-toolbar .e-toolbar-items,
+.dark .e-grid .e-toolbar .e-toolbar-item,
+.dark .e-grid .e-toolbar .e-tbar-btn {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+  border-color: #27272a !important;
+}
+
+.dark .e-grid .e-toolbar .e-search input,
+.dark .e-grid .e-filterbarcell input {
+  background-color: #09090b !important;
+  color: #f4f4f5 !important;
+  border-color: #27272a !important;
+}
+
+.dark .e-grid .e-row,
+.dark .e-grid .e-rowcell {
+  background-color: #121215 !important;
+  color: #e4e4e7 !important;
+  border-color: #27272a !important;
+}
+
+.dark .e-grid .e-altrow,
+.dark .e-grid .e-altrow .e-rowcell {
+  background-color: #18181b !important;
+  color: #e4e4e7 !important;
+  border-color: #27272a !important;
+}
+
+.dark .e-grid .e-row:hover,
+.dark .e-grid .e-row:hover .e-rowcell {
+  background-color: #27272a !important;
+}
+
+.dark .e-grid .e-groupdroparea,
+.dark .e-grid .e-gridfooter,
+.dark .e-grid .e-summaryrow,
+.dark .e-grid .e-gridpager,
+.dark .e-grid .e-pagercontainer,
+.dark .e-grid .e-pager {
+  background-color: #18181b !important;
+  color: #a1a1aa !important;
+  border-color: #27272a !important;
+}
+
+.dark .e-grid .e-pager .e-currentitem {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* Syncfusion Input Fields, Dropdowns, DatePickers & Form Controls in Dark Mode */
+.dark .e-input-group,
+.dark .e-control-wrapper.e-input-group,
+.dark .e-input-group.e-control-wrapper {
+  background-color: #18181b !important;
+  border-color: #3f3f46 !important;
+  color: #f4f4f5 !important;
+  border-radius: 0.5rem !important;
+}
+
+.dark .e-input-group input.e-input,
+.dark .e-input-group input,
+.dark .e-input-group textarea,
+.dark .e-dropdownbase,
+.dark .e-ddl .e-input {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+}
+
+.dark .e-input-group:focus-within,
+.dark .e-input-group.e-input-focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 1px #3b82f6 !important;
+}
+
+/* Dropdown, Calendar & Excel Filter Popups in Dark Mode */
+.dark .e-dropdownbase .e-list-item,
+.dark .e-popup,
+.dark .e-datepicker-popup,
+.dark .e-calendar,
+.dark .e-excel-filter,
+.dark .e-contextmenu,
+.dark .e-menu-item,
+.dark .e-filter-popup,
+.dark .e-menu-wrapper,
+.dark .e-menu-container {
+  background-color: #18181b !important;
+  border-color: #3f3f46 !important;
+  color: #f4f4f5 !important;
+}
+
+.dark .e-dropdownbase .e-list-item.e-active,
+.dark .e-dropdownbase .e-list-item:hover,
+.dark .e-contextmenu .e-menu-item:hover,
+.dark .e-contextmenu .e-menu-item.e-focused,
+.dark .e-menu-wrapper .e-menu-item.e-focused,
+.dark .e-calendar .e-content td.e-focused-date,
+.dark .e-calendar .e-content td.e-selected {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* Gantt Chart & TreeGrid Dark Styling */
+.dark .e-gantt,
+.dark .e-gantt .e-gantt-chart,
+.dark .e-gantt .e-gantt-tree-grid-container {
+  background-color: #121215 !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+.dark .e-gantt .e-gantt-header-container,
+.dark .e-gantt .e-timeline-header-container {
+  background-color: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+/* Kanban Board Dark Styling */
+.dark .e-kanban,
+.dark .e-kanban .e-kanban-table,
+.dark .e-kanban .e-kanban-column {
+  background-color: #121215 !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+.dark .e-kanban .e-card {
+  background-color: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
 }

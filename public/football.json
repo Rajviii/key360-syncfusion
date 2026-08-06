@@ -1,0 +1,530 @@
+{
+    "id": "projects",
+    "name": "FIFA World Cup 2026",
+    "description": "Football Management, Gantt timelines, kanban task workflows, and KPI dashboards.",
+    "icon": "Trophy",
+    "provider": "mock",
+    "permissions": [
+        "create",
+        "edit",
+        "delete",
+        "export",
+        "approve"
+    ],
+    "mockData": [
+        {
+            "id": 1,
+            "wbsId": "A",
+            "name": "Argentina",
+            "status": "Qualified",
+            "manager": "Lionel Scaloni",
+            "assignee": "Lionel Messi",
+            "assigneeRole": "Captain",
+            "budget": 8,
+            "startDate": "2026-06-11",
+            "endDate": "2026-07-19",
+            "duration": 39,
+            "progress": 100,
+            "department": "CONMEBOL",
+            "activeTasks": 7,
+            "subtasks": [
+                {
+                    "id": 11,
+                    "wbsId": "A.1",
+                    "name": "Group Stage",
+                    "status": "Completed",
+                    "manager": "Lionel Scaloni",
+                    "assignee": "Lionel Messi",
+                    "assigneeRole": "Captain",
+                    "startDate": "2026-06-11",
+                    "endDate": "2026-06-27",
+                    "duration": 17,
+                    "progress": 100,
+                    "subtasks": [
+                        {
+                            "id": 111,
+                            "wbsId": "A.1.1",
+                            "name": "Argentina vs Japan",
+                            "status": "Won",
+                            "manager": "Lionel Scaloni",
+                            "assignee": "Lionel Messi",
+                            "assigneeRole": "Captain",
+                            "startDate": "2026-06-11",
+                            "endDate": "2026-06-11",
+                            "duration": 1,
+                            "progress": 100
+                        },
+                        {
+                            "id": 112,
+                            "wbsId": "A.1.2",
+                            "name": "Argentina vs Nigeria",
+                            "status": "Won",
+                            "manager": "Lionel Scaloni",
+                            "assignee": "Julian Alvarez",
+                            "assigneeRole": "Forward",
+                            "startDate": "2026-06-17",
+                            "endDate": "2026-06-17",
+                            "duration": 1,
+                            "progress": 100,
+                            "predecessor": "111FS"
+                        },
+                        {
+                            "id": 113,
+                            "wbsId": "A.1.3",
+                            "name": "Argentina vs Netherlands",
+                            "status": "Scheduled",
+                            "manager": "Lionel Scaloni",
+                            "assignee": "Lionel Messi",
+                            "assigneeRole": "Captain",
+                            "startDate": "2026-06-24",
+                            "endDate": "2026-06-24",
+                            "duration": 1,
+                            "progress": 0,
+                            "predecessor": "112FS"
+                        }
+                    ]
+                },
+                {
+                    "id": 12,
+                    "wbsId": "A.2",
+                    "name": "Knockout Stage",
+                    "status": "Scheduled",
+                    "manager": "Lionel Scaloni",
+                    "assignee": "Lionel Messi",
+                    "assigneeRole": "Captain",
+                    "startDate": "2026-06-30",
+                    "endDate": "2026-07-19",
+                    "duration": 20,
+                    "progress": 40,
+                    "predecessor": "11FS"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "wbsId": "B",
+            "name": "France",
+            "status": "Qualified",
+            "manager": "Didier Deschamps",
+            "assignee": "Kylian Mbappe",
+            "assigneeRole": "Captain",
+            "budget": 9,
+            "startDate": "2026-06-11",
+            "endDate": "2026-07-19",
+            "duration": 39,
+            "progress": 95,
+            "department": "UEFA",
+            "activeTasks": 7
+        },
+        {
+            "id": 3,
+            "wbsId": "C",
+            "name": "Brazil",
+            "status": "Qualified",
+            "manager": "Carlo Ancelotti",
+            "assignee": "Vinicius Jr",
+            "assigneeRole": "Captain",
+            "budget": 7,
+            "startDate": "2026-06-11",
+            "endDate": "2026-07-19",
+            "duration": 39,
+            "progress": 92,
+            "department": "CONMEBOL",
+            "activeTasks": 7
+        },
+        {
+            "id": 4,
+            "wbsId": "D",
+            "name": "England",
+            "status": "Qualified",
+            "manager": "Thomas Tuchel",
+            "assignee": "Harry Kane",
+            "assigneeRole": "Captain",
+            "budget": 6,
+            "startDate": "2026-06-11",
+            "endDate": "2026-07-19",
+            "duration": 39,
+            "progress": 88,
+            "department": "UEFA",
+            "activeTasks": 7
+        },
+        {
+            "id": 5,
+            "wbsId": "E",
+            "name": "Spain",
+            "status": "Qualified",
+            "manager": "Luis de la Fuente",
+            "assignee": "Alvaro Morata",
+            "assigneeRole": "Captain",
+            "budget": 10,
+            "startDate": "2026-06-11",
+            "endDate": "2026-07-19",
+            "duration": 39,
+            "progress": 100,
+            "department": "UEFA",
+            "activeTasks": 7
+        },
+        {
+            "id": 6,
+            "wbsId": "F",
+            "name": "Germany",
+            "status": "Qualified",
+            "manager": "Julian Nagelsmann",
+            "assignee": "Joshua Kimmich",
+            "assigneeRole": "Captain",
+            "budget": 8,
+            "startDate": "2026-06-11",
+            "endDate": "2026-07-19",
+            "duration": 39,
+            "progress": 85,
+            "department": "UEFA",
+            "activeTasks": 7
+        },
+        {
+            "id": 7,
+            "wbsId": "G",
+            "name": "Portugal",
+            "status": "Qualified",
+            "manager": "Roberto Martinez",
+            "assignee": "Cristiano Ronaldo",
+            "assigneeRole": "Captain",
+            "budget": 9,
+            "startDate": "2026-06-11",
+            "endDate": "2026-07-19",
+            "duration": 39,
+            "progress": 91,
+            "department": "UEFA",
+            "activeTasks": 7
+        },
+        {
+            "id": 8,
+            "wbsId": "H",
+            "name": "Netherlands",
+            "status": "Qualified",
+            "manager": "Ronald Koeman",
+            "assignee": "Virgil van Dijk",
+            "assigneeRole": "Captain",
+            "budget": 7,
+            "startDate": "2026-06-11",
+            "endDate": "2026-07-19",
+            "duration": 39,
+            "progress": 83,
+            "department": "UEFA",
+            "activeTasks": 7
+        }
+    ],
+    "fields": [
+        {
+            "key": "id",
+            "label": "Team ID",
+            "controlType": "number",
+            "showInGrid": true,
+            "showInForm": false,
+            "frozen": true,
+            "width": 90,
+            "allowSorting": true
+        },
+        {
+            "key": "name",
+            "label": "Team",
+            "controlType": "text",
+            "placeholder": "e.g. Argentina",
+            "validation": {
+                "required": true,
+                "minLength": 3
+            },
+            "showInGrid": true,
+            "showInForm": true,
+            "allowSorting": true,
+            "allowFiltering": true
+        },
+        {
+            "key": "status",
+            "label": "Tournament Status",
+            "controlType": "select",
+            "options": [
+                {
+                    "label": "Qualified",
+                    "value": "Qualified"
+                },
+                {
+                    "label": "Playing",
+                    "value": "Playing"
+                },
+                {
+                    "label": "Knocked Out",
+                    "value": "Knocked Out"
+                },
+                {
+                    "label": "Champion",
+                    "value": "Champion"
+                }
+            ],
+            "showInGrid": true,
+            "showInForm": true,
+            "groupable": true
+        },
+        {
+            "key": "manager",
+            "label": "Coach",
+            "controlType": "autocomplete",
+            "placeholder": "Select Coach...",
+            "showInGrid": true,
+            "showInForm": true
+        },
+        {
+            "key": "assignee",
+            "label": "Captain",
+            "controlType": "autocomplete",
+            "showInGrid": true,
+            "showInForm": true
+        },
+        {
+            "key": "assigneeRole",
+            "label": "Captain Role",
+            "controlType": "text",
+            "showInGrid": false,
+            "showInForm": true
+        },
+        {
+            "key": "department",
+            "label": "Confederation",
+            "controlType": "select",
+            "options": [
+                {
+                    "label": "UEFA",
+                    "value": "UEFA"
+                },
+                {
+                    "label": "CONMEBOL",
+                    "value": "CONMEBOL"
+                },
+                {
+                    "label": "AFC",
+                    "value": "AFC"
+                },
+                {
+                    "label": "CAF",
+                    "value": "CAF"
+                },
+                {
+                    "label": "CONCACAF",
+                    "value": "CONCACAF"
+                },
+                {
+                    "label": "OFC",
+                    "value": "OFC"
+                }
+            ],
+            "showInGrid": true,
+            "showInForm": true,
+            "groupable": true
+        },
+        {
+            "key": "budget",
+            "label": "Goals Scored",
+            "controlType": "number",
+            "showInGrid": true,
+            "showInForm": true,
+            "aggregate": "sum",
+            "allowSorting": true
+        },
+        {
+            "key": "activeTasks",
+            "label": "Matches Played",
+            "controlType": "number",
+            "showInGrid": true,
+            "showInForm": true
+        },
+        {
+            "key": "progress",
+            "label": "Qualification %",
+            "controlType": "rating",
+            "showInGrid": true,
+            "showInForm": true,
+            "aggregate": "average"
+        },
+        {
+            "key": "startDate",
+            "label": "Tournament Start",
+            "controlType": "date",
+            "showInGrid": true,
+            "showInForm": true,
+            "format": "yyyy-MM-dd"
+        },
+        {
+            "key": "endDate",
+            "label": "Tournament End",
+            "controlType": "date",
+            "showInGrid": true,
+            "showInForm": true,
+            "format": "yyyy-MM-dd"
+        }
+    ],
+    "views": [
+        {
+            "id": "v-dashboard",
+            "name": "Tournament Dashboard",
+            "type": "dashboard",
+            "icon": "LayoutDashboard",
+            "description": "FIFA World Cup 2026 Executive Dashboard",
+            "widgets": [
+                {
+                    "id": "w-kpi-1",
+                    "title": "Total Goals Scored",
+                    "type": "kpi",
+                    "span": 4
+                },
+                {
+                    "id": "w-kpi-2",
+                    "title": "Qualified Teams",
+                    "type": "kpi",
+                    "span": 4
+                },
+                {
+                    "id": "w-kpi-3",
+                    "title": "Average Qualification %",
+                    "type": "kpi",
+                    "span": 4
+                },
+                {
+                    "id": "w-chart-goals",
+                    "title": "Goals by Confederation",
+                    "type": "chart",
+                    "span": 6,
+                    "chartConfig": {
+                        "chartType": "Column",
+                        "xField": "department",
+                        "yField": "budget",
+                        "title": "Goals by Confederation"
+                    }
+                },
+                {
+                    "id": "w-chart-progress",
+                    "title": "Qualification %",
+                    "type": "chart",
+                    "span": 6,
+                    "chartConfig": {
+                        "chartType": "Pie",
+                        "xField": "department",
+                        "yField": "progress",
+                        "title": "Qualification %"
+                    }
+                },
+                {
+                    "id": "w-grid-summary",
+                    "title": "Top Ranked Teams",
+                    "type": "grid",
+                    "span": 12,
+                    "limit": 5,
+                    "gridConfig": {
+                        "allowPaging": true,
+                        "pageSize": 5
+                    }
+                }
+            ]
+        },
+        {
+            "id": "v-grid",
+            "name": "Team Statistics",
+            "type": "grid",
+            "icon": "Table",
+            "widgets": [
+                {
+                    "id": "w-main-grid",
+                    "title": "All Teams",
+                    "type": "grid",
+                    "gridConfig": {
+                        "virtualScrolling": true,
+                        "allowPaging": true,
+                        "pageSize": 25,
+                        "allowSorting": true,
+                        "allowFiltering": true,
+                        "allowGrouping": true,
+                        "allowColumnChooser": true,
+                        "allowExcelExport": true,
+                        "allowPdfExport": true,
+                        "editMode": "Dialog",
+                        "frozenColumns": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id": "v-gantt",
+            "name": "Tournament Schedule",
+            "type": "gantt",
+            "icon": "GitBranch",
+            "widgets": [
+                {
+                    "id": "w-gantt-main",
+                    "title": "Tournament Timeline",
+                    "type": "gantt",
+                    "ganttConfig": {
+                        "taskIdField": "id",
+                        "taskNameField": "name",
+                        "startDateField": "startDate",
+                        "endDateField": "endDate",
+                        "durationField": "duration",
+                        "progressField": "progress",
+                        "dependencyField": "predecessor",
+                        "childField": "subtasks",
+                        "wbsCodeField": "wbsId",
+                        "assigneeField": "assignee",
+                        "statusField": "status"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "v-kanban",
+            "name": "Tournament Progress",
+            "type": "kanban",
+            "icon": "Kanban",
+            "widgets": [
+                {
+                    "id": "w-kanban-main",
+                    "title": "Tournament Status",
+                    "type": "kanban",
+                    "kanbanConfig": {
+                        "keyField": "id",
+                        "headerField": "name",
+                        "contentField": "manager",
+                        "categoryField": "status",
+                        "columns": [
+                            {
+                                "key": "Qualified",
+                                "title": "Qualified"
+                            },
+                            {
+                                "key": "Playing",
+                                "title": "Playing"
+                            },
+                            {
+                                "key": "Knocked Out",
+                                "title": "Knocked Out"
+                            },
+                            {
+                                "key": "Champion",
+                                "title": "Champion"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": "v-form",
+            "name": "Add / Edit Team",
+            "type": "form",
+            "icon": "FilePlus",
+            "widgets": [
+                {
+                    "id": "w-team-form",
+                    "title": "Team Information",
+                    "type": "form"
+                }
+            ]
+        }
+    ]
+}

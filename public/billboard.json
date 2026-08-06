@@ -1,0 +1,563 @@
+{
+    "id": "billboard-2026",
+    "name": "Billboard Hot 100 (2026)",
+    "description": "Billboard Hot 100 chart tracking, release timelines, genre workflows, and music streaming analytics.",
+    "icon": "Music",
+    "provider": "mock",
+    "permissions": [
+        "create",
+        "edit",
+        "delete",
+        "export",
+        "approve"
+    ],
+    "mockData": [
+        {
+            "id": 1,
+            "wbsId": "S1",
+            "name": "Quantum Heart",
+            "status": "Peak #1",
+            "manager": "Jack Antonoff",
+            "assignee": "Taylor Swift",
+            "assigneeRole": "Lead Artist",
+            "budget": 450,
+            "startDate": "2026-01-10",
+            "endDate": "2026-06-30",
+            "duration": 171,
+            "progress": 98,
+            "department": "Pop",
+            "activeTasks": 1,
+            "subtasks": [
+                {
+                    "id": 11,
+                    "wbsId": "S1.1",
+                    "name": "Single & Lyric Video Drop",
+                    "status": "Completed",
+                    "manager": "Jack Antonoff",
+                    "assignee": "Taylor Swift",
+                    "assigneeRole": "Lead Artist",
+                    "startDate": "2026-01-10",
+                    "endDate": "2026-01-25",
+                    "duration": 15,
+                    "progress": 100,
+                    "subtasks": [
+                        {
+                            "id": 111,
+                            "wbsId": "S1.1.1",
+                            "name": "Spotify & Apple Music Premiere",
+                            "status": "Completed",
+                            "manager": "Jack Antonoff",
+                            "assignee": "Taylor Swift",
+                            "assigneeRole": "Lead Artist",
+                            "startDate": "2026-01-10",
+                            "endDate": "2026-01-10",
+                            "duration": 1,
+                            "progress": 100
+                        },
+                        {
+                            "id": 112,
+                            "wbsId": "S1.1.2",
+                            "name": "Official Music Video Premiere",
+                            "status": "Completed",
+                            "manager": "Joseph Kahn",
+                            "assignee": "Taylor Swift",
+                            "assigneeRole": "Lead Artist",
+                            "startDate": "2026-01-17",
+                            "endDate": "2026-01-17",
+                            "duration": 1,
+                            "progress": 100,
+                            "predecessor": "111FS"
+                        }
+                    ]
+                },
+                {
+                    "id": 12,
+                    "wbsId": "S1.2",
+                    "name": "Global Radio & Streaming Push",
+                    "status": "Completed",
+                    "manager": "Republic Records",
+                    "assignee": "Taylor Swift",
+                    "assigneeRole": "Lead Artist",
+                    "startDate": "2026-01-26",
+                    "endDate": "2026-06-30",
+                    "duration": 155,
+                    "progress": 96,
+                    "predecessor": "11FS"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "wbsId": "S2",
+            "name": "Midnight Echoes",
+            "status": "Peak #1",
+            "manager": "FINNEAS",
+            "assignee": "Billie Eilish",
+            "assigneeRole": "Lead Artist",
+            "budget": 380,
+            "startDate": "2026-02-01",
+            "endDate": "2026-07-15",
+            "duration": 164,
+            "progress": 94,
+            "department": "Alternative / Rock",
+            "activeTasks": 1,
+            "subtasks": [
+                {
+                    "id": 21,
+                    "wbsId": "S2.1",
+                    "name": "Album Lead Single Launch",
+                    "status": "Completed",
+                    "manager": "FINNEAS",
+                    "assignee": "Billie Eilish",
+                    "assigneeRole": "Lead Artist",
+                    "startDate": "2026-02-01",
+                    "endDate": "2026-02-20",
+                    "duration": 19,
+                    "progress": 100
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "wbsId": "S3",
+            "name": "Hyperdrive",
+            "status": "Top 10",
+            "manager": "Metro Boomin",
+            "assignee": "Kendrick Lamar",
+            "assigneeRole": "Lead Artist",
+            "budget": 410,
+            "startDate": "2026-02-14",
+            "endDate": "2026-07-20",
+            "duration": 156,
+            "progress": 91,
+            "department": "Hip-Hop / Rap",
+            "activeTasks": 2
+        },
+        {
+            "id": 4,
+            "wbsId": "S4",
+            "name": "Velvet Horizon",
+            "status": "Top 10",
+            "manager": "Ian Kirkpatrick",
+            "assignee": "Sabrina Carpenter",
+            "assigneeRole": "Lead Artist",
+            "budget": 340,
+            "startDate": "2026-03-01",
+            "endDate": "2026-07-30",
+            "duration": 151,
+            "progress": 89,
+            "department": "Pop",
+            "activeTasks": 3
+        },
+        {
+            "id": 5,
+            "wbsId": "S5",
+            "name": "Neon Dynasty",
+            "status": "Platinum Certified",
+            "manager": "Max Martin",
+            "assignee": "The Weeknd",
+            "assigneeRole": "Lead Artist",
+            "budget": 520,
+            "startDate": "2026-01-01",
+            "endDate": "2026-06-15",
+            "duration": 165,
+            "progress": 97,
+            "department": "R&B / Soul",
+            "activeTasks": 1
+        },
+        {
+            "id": 6,
+            "wbsId": "S6",
+            "name": "Starlight Drift",
+            "status": "Top 10",
+            "manager": "Dan Nigro",
+            "assignee": "Olivia Rodrigo",
+            "assigneeRole": "Lead Artist",
+            "budget": 290,
+            "startDate": "2026-03-15",
+            "endDate": "2026-07-30",
+            "duration": 137,
+            "progress": 86,
+            "department": "Pop",
+            "activeTasks": 4
+        },
+        {
+            "id": 7,
+            "wbsId": "S7",
+            "name": "Cosmic Groove",
+            "status": "Rising",
+            "manager": "SG Lewis",
+            "assignee": "Dua Lipa",
+            "assigneeRole": "Lead Artist",
+            "budget": 260,
+            "startDate": "2026-04-01",
+            "endDate": "2026-08-01",
+            "duration": 122,
+            "progress": 82,
+            "department": "Dance / Electronic",
+            "activeTasks": 7
+        },
+        {
+            "id": 8,
+            "wbsId": "S8",
+            "name": "Southern Lights",
+            "status": "Rising",
+            "manager": "Dann Huff",
+            "assignee": "Morgan Wallen",
+            "assigneeRole": "Lead Artist",
+            "budget": 310,
+            "startDate": "2026-04-10",
+            "endDate": "2026-08-01",
+            "duration": 113,
+            "progress": 85,
+            "department": "Country",
+            "activeTasks": 5
+        },
+        {
+            "id": 9,
+            "wbsId": "S9",
+            "name": "Club 2026",
+            "status": "Top 10",
+            "manager": "A. G. Cook",
+            "assignee": "Charli xcx",
+            "assigneeRole": "Lead Artist",
+            "budget": 275,
+            "startDate": "2026-03-20",
+            "endDate": "2026-07-25",
+            "duration": 127,
+            "progress": 88,
+            "department": "Dance / Electronic",
+            "activeTasks": 6
+        },
+        {
+            "id": 10,
+            "wbsId": "S10",
+            "name": "Pink Sunset",
+            "status": "Platinum Certified",
+            "manager": "Dan Nigro",
+            "assignee": "Chappell Roan",
+            "assigneeRole": "Lead Artist",
+            "budget": 490,
+            "startDate": "2026-01-20",
+            "endDate": "2026-07-10",
+            "duration": 171,
+            "progress": 95,
+            "department": "Pop",
+            "activeTasks": 2
+        }
+    ],
+    "fields": [
+        {
+            "key": "id",
+            "label": "Track ID",
+            "controlType": "number",
+            "showInGrid": true,
+            "showInForm": false,
+            "frozen": true,
+            "width": 90,
+            "allowSorting": true
+        },
+        {
+            "key": "name",
+            "label": "Song Title",
+            "controlType": "text",
+            "placeholder": "e.g. Quantum Heart",
+            "validation": {
+                "required": true,
+                "minLength": 2
+            },
+            "showInGrid": true,
+            "showInForm": true,
+            "allowSorting": true,
+            "allowFiltering": true
+        },
+        {
+            "key": "status",
+            "label": "Chart Status",
+            "controlType": "select",
+            "options": [
+                {
+                    "label": "Peak #1",
+                    "value": "Peak #1"
+                },
+                {
+                    "label": "Top 10",
+                    "value": "Top 10"
+                },
+                {
+                    "label": "Rising",
+                    "value": "Rising"
+                },
+                {
+                    "label": "Platinum Certified",
+                    "value": "Platinum Certified"
+                }
+            ],
+            "showInGrid": true,
+            "showInForm": true,
+            "groupable": true
+        },
+        {
+            "key": "manager",
+            "label": "Producer",
+            "controlType": "autocomplete",
+            "placeholder": "Select Producer...",
+            "showInGrid": true,
+            "showInForm": true
+        },
+        {
+            "key": "assignee",
+            "label": "Artist",
+            "controlType": "autocomplete",
+            "showInGrid": true,
+            "showInForm": true
+        },
+        {
+            "key": "assigneeRole",
+            "label": "Artist Role",
+            "controlType": "text",
+            "showInGrid": false,
+            "showInForm": true
+        },
+        {
+            "key": "department",
+            "label": "Genre",
+            "controlType": "select",
+            "options": [
+                {
+                    "label": "Pop",
+                    "value": "Pop"
+                },
+                {
+                    "label": "Hip-Hop / Rap",
+                    "value": "Hip-Hop / Rap"
+                },
+                {
+                    "label": "R&B / Soul",
+                    "value": "R&B / Soul"
+                },
+                {
+                    "label": "Country",
+                    "value": "Country"
+                },
+                {
+                    "label": "Dance / Electronic",
+                    "value": "Dance / Electronic"
+                },
+                {
+                    "label": "Alternative / Rock",
+                    "value": "Alternative / Rock"
+                }
+            ],
+            "showInGrid": true,
+            "showInForm": true,
+            "groupable": true
+        },
+        {
+            "key": "budget",
+            "label": "Streams (M)",
+            "controlType": "number",
+            "showInGrid": true,
+            "showInForm": true,
+            "aggregate": "sum",
+            "allowSorting": true
+        },
+        {
+            "key": "activeTasks",
+            "label": "Peak Rank",
+            "controlType": "number",
+            "showInGrid": true,
+            "showInForm": true
+        },
+        {
+            "key": "progress",
+            "label": "Chart Score %",
+            "controlType": "rating",
+            "showInGrid": true,
+            "showInForm": true,
+            "aggregate": "average"
+        },
+        {
+            "key": "startDate",
+            "label": "Release Date",
+            "controlType": "date",
+            "showInGrid": true,
+            "showInForm": true,
+            "format": "yyyy-MM-dd"
+        },
+        {
+            "key": "endDate",
+            "label": "Peak Date",
+            "controlType": "date",
+            "showInGrid": true,
+            "showInForm": true,
+            "format": "yyyy-MM-dd"
+        }
+    ],
+    "views": [
+        {
+            "id": "v-dashboard",
+            "name": "Chart Dashboard",
+            "type": "dashboard",
+            "icon": "LayoutDashboard",
+            "description": "Billboard Hot 100 2026 Executive Analytics",
+            "widgets": [
+                {
+                    "id": "w-kpi-1",
+                    "title": "Total Streams (Millions)",
+                    "type": "kpi",
+                    "span": 4
+                },
+                {
+                    "id": "w-kpi-2",
+                    "title": "Charted Tracks",
+                    "type": "kpi",
+                    "span": 4
+                },
+                {
+                    "id": "w-kpi-3",
+                    "title": "Average Chart Score %",
+                    "type": "kpi",
+                    "span": 4
+                },
+                {
+                    "id": "w-chart-streams",
+                    "title": "Streams by Genre",
+                    "type": "chart",
+                    "span": 6,
+                    "chartConfig": {
+                        "chartType": "Column",
+                        "xField": "department",
+                        "yField": "budget",
+                        "title": "Streams by Genre"
+                    }
+                },
+                {
+                    "id": "w-chart-score",
+                    "title": "Chart Score % by Genre",
+                    "type": "chart",
+                    "span": 6,
+                    "chartConfig": {
+                        "chartType": "Pie",
+                        "xField": "department",
+                        "yField": "progress",
+                        "title": "Chart Score % by Genre"
+                    }
+                },
+                {
+                    "id": "w-grid-summary",
+                    "title": "Top Ranked Songs",
+                    "type": "grid",
+                    "span": 12,
+                    "limit": 5,
+                    "gridConfig": {
+                        "allowPaging": true,
+                        "pageSize": 5
+                    }
+                }
+            ]
+        },
+        {
+            "id": "v-grid",
+            "name": "Hot 100 Rankings",
+            "type": "grid",
+            "icon": "Table",
+            "widgets": [
+                {
+                    "id": "w-main-grid",
+                    "title": "All Track Rankings",
+                    "type": "grid",
+                    "gridConfig": {
+                        "virtualScrolling": true,
+                        "allowPaging": true,
+                        "pageSize": 25,
+                        "allowSorting": true,
+                        "allowFiltering": true,
+                        "allowGrouping": true,
+                        "allowColumnChooser": true,
+                        "allowExcelExport": true,
+                        "allowPdfExport": true,
+                        "editMode": "Dialog",
+                        "frozenColumns": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id": "v-gantt",
+            "name": "Release Schedule",
+            "type": "gantt",
+            "icon": "GitBranch",
+            "widgets": [
+                {
+                    "id": "w-gantt-main",
+                    "title": "Single Campaign Timeline",
+                    "type": "gantt",
+                    "ganttConfig": {
+                        "taskIdField": "id",
+                        "taskNameField": "name",
+                        "startDateField": "startDate",
+                        "endDateField": "endDate",
+                        "durationField": "duration",
+                        "progressField": "progress",
+                        "dependencyField": "predecessor",
+                        "childField": "subtasks",
+                        "wbsCodeField": "wbsId",
+                        "assigneeField": "assignee",
+                        "statusField": "status"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "v-kanban",
+            "name": "Chart Status Workflow",
+            "type": "kanban",
+            "icon": "Kanban",
+            "widgets": [
+                {
+                    "id": "w-kanban-main",
+                    "title": "Song Performance Status",
+                    "type": "kanban",
+                    "kanbanConfig": {
+                        "keyField": "id",
+                        "headerField": "name",
+                        "contentField": "manager",
+                        "categoryField": "status",
+                        "columns": [
+                            {
+                                "key": "Rising",
+                                "title": "Rising"
+                            },
+                            {
+                                "key": "Top 10",
+                                "title": "Top 10"
+                            },
+                            {
+                                "key": "Peak #1",
+                                "title": "Peak #1"
+                            },
+                            {
+                                "key": "Platinum Certified",
+                                "title": "Platinum Certified"
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": "v-form",
+            "name": "Add / Edit Track",
+            "type": "form",
+            "icon": "FilePlus",
+            "widgets": [
+                {
+                    "id": "w-track-form",
+                    "title": "Track Information",
+                    "type": "form"
+                }
+            ]
+        }
+    ]
+}
