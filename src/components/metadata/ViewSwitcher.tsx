@@ -11,7 +11,8 @@ import { DynamicChart } from './renderers/DynamicChart';
 import { DynamicGantt } from './renderers/DynamicGantt';
 import { DynamicKanban } from './renderers/DynamicKanban';
 import { DynamicPdfViewer } from './renderers/DynamicPdfViewer';
-import { LayoutDashboard, Table, GitBranch, Kanban, FilePlus, FileText, PieChart, ShieldAlert } from 'lucide-react';
+import { EventCalendar } from './renderers/EventCalendar';
+import { LayoutDashboard, Table, GitBranch, Kanban, FilePlus, FileText, PieChart, ShieldAlert, CalendarDays } from 'lucide-react';
 
 interface ViewSwitcherProps {
   metadata: ModuleMetadata;
@@ -37,6 +38,8 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ metadata }) => {
       case 'grid': return <Table className="w-4 h-4" />;
       case 'gantt': return <GitBranch className="w-4 h-4" />;
       case 'kanban': return <Kanban className="w-4 h-4" />;
+      case 'schedule':
+      case 'calendar': return <CalendarDays className="w-4 h-4" />;
       case 'chart': return <PieChart className="w-4 h-4" />;
       case 'form': return <FilePlus className="w-4 h-4" />;
       case 'pdf': return <FileText className="w-4 h-4" />;
@@ -147,6 +150,8 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ metadata }) => {
           data={data}
           config={activeView.widgets?.[0]?.kanbanConfig}
         />
+      ) : activeView.type === 'schedule' || activeView.type === 'calendar' ? (
+        <EventCalendar data={data} />
       ) : activeView.type === 'chart' ? (
         <DynamicChart
           data={data}

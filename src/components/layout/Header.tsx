@@ -15,9 +15,9 @@ export const Header: React.FC = () => {
     <header className="h-16 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-[100] px-6 flex items-center justify-between">
       {/* Brand Title */}
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-md">
+        {/* <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-md">
           <Sparkles className="w-5 h-5 text-white" />
-        </div>
+        </div> */}
         <div>
           <h1 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
             KEY360 Enterprise Portal

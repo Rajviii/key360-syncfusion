@@ -45,11 +45,11 @@ const navigationGroups: NavGroup[] = [
         name: 'Project Hub',
         href: '/projects',
         icon: FolderKanban,
-        description: 'Gantt, Grid, Kanban & KPI Dashboard',
-        children: [
-          { id: 'projects-wbs', name: 'WBS Gantt Schedule', href: '/projects#gantt', icon: BarChart3 },
-          { id: 'projects-tasks', name: 'Task Kanban Board', href: '/projects#kanban', icon: Folder }
-        ]
+        // description: 'Gantt, Grid, Kanban & KPI Dashboard',
+        // children: [
+        //   { id: 'projects-wbs', name: 'WBS Gantt Schedule', href: '/projects#gantt', icon: BarChart3 },
+        //   { id: 'projects-tasks', name: 'Task Kanban Board', href: '/projects#kanban', icon: Folder }
+        // ]
       },
       {
         id: 'timesheets',
@@ -132,8 +132,8 @@ export const Sidebar: React.FC = () => {
         <div
           title={item.description || item.name}
           className={`group flex items-center justify-between px-2.5 py-1.5 rounded-lg transition-all text-xs font-medium cursor-pointer ${isActive
-              ? 'bg-blue-600 text-white shadow-xs font-semibold'
-              : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/70 dark:hover:bg-zinc-800/70'
+            ? 'bg-blue-600 text-white shadow-xs font-semibold'
+            : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/70 dark:hover:bg-zinc-800/70'
             }`}
           style={{ paddingLeft: `${Math.max(10, depth * 12 + 10)}px` }}
         >
@@ -192,8 +192,8 @@ export const Sidebar: React.FC = () => {
                 href={item.href || '#'}
                 title={item.name}
                 className={`p-2 rounded-lg transition-all ${isActive
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-800'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-800'
                   }`}
               >
                 <Icon className="w-4 h-4" />

@@ -227,3 +227,12 @@ body {
 .e-toolbar select {
   display: inline-block !important;
 }
+
+/* ==========================================================================
+   Syncfusion PDF Viewer Adaptive Width Styles
+   ========================================================================== */
+.e-pdfviewer,
+.e-pdfviewer .e-pv-toolbar,
+.e-pdfviewer .e-pv-viewer-container {
+  width: 100% !important;
+}

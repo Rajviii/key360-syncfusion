@@ -49,6 +49,19 @@ export const leavesMetadata: ModuleMetadata = {
   ],
   views: [
     {
+      id: 'v-schedule',
+      name: 'Leave Event Calendar',
+      type: 'schedule',
+      icon: 'CalendarDays',
+      widgets: [
+        {
+          id: 'w-leaves-schedule',
+          title: 'Leave Event Calendar & Planner',
+          type: 'schedule'
+        }
+      ]
+    },
+    {
       id: 'v-kanban',
       name: 'Approval Workflow Kanban',
       type: 'kanban',

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   PdfViewerComponent,
   Toolbar,
@@ -89,6 +89,23 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
   // UI Panel Toggle States
   const [leftPaneOpen, setLeftPaneOpen] = useState(true);
   const [rightPaneOpen, setRightPaneOpen] = useState(true);
+
+  // Automatically recalculate container width & update PDF viewer layout when side panels toggle
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (viewerRef.current) {
+        try {
+          if (typeof (viewerRef.current as any).updateViewerContainer === 'function') {
+            (viewerRef.current as any).updateViewerContainer();
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+      window.dispatchEvent(new Event('resize'));
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [leftPaneOpen, rightPaneOpen]);
   const [useNativeViewer, setUseNativeViewer] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
     'Cobus Pretorius (25 Sep 2019)': true,
@@ -211,7 +228,7 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
     }
   };
 
-  // Apply property modifications from the Inspector panel back to state
+  // Apply property modifications from the Inspector panel back to state & PDF canvas annotation
   const handleApplyProperties = () => {
     if (!selectedCommentId) return;
     setComments(prev =>
@@ -230,6 +247,27 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
         return c;
       })
     );
+
+    // Sync updated properties to the active annotation on the PDF Viewer canvas
+    if (viewerRef.current) {
+      try {
+        const viewer = viewerRef.current as any;
+        const targetAnnId = selectedComment?.annotationId;
+        if (targetAnnId && viewer.annotationModule) {
+          if (typeof viewer.annotationModule.editAnnotation === 'function') {
+            viewer.annotationModule.editAnnotation({
+              id: targetAnnId,
+              strokeColor: propColor,
+              thickness: propBorderWidth,
+              author: propAuthor,
+              subject: propSubject
+            });
+          }
+        }
+      } catch (err) {
+        console.log('Canvas annotation style update:', err);
+      }
+    }
   };
 
   // Toggle comment annotation layer visibility
@@ -406,13 +444,22 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
             // )}
           )}
 
-          <a
-            href={resolvedUrl}
-            download="document.pdf"
+          <button
+            onClick={() => {
+              if (viewerRef.current) {
+                viewerRef.current.download();
+              } else {
+                const link = document.createElement('a');
+                link.href = resolvedUrl;
+                link.download = 'document.pdf';
+                link.click();
+              }
+            }}
             className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-zinc-300 bg-zinc-800 hover:bg-zinc-700 rounded border border-zinc-700 cursor-pointer"
+            title="Download PDF with embedded annotations"
           >
-            <Download className="w-3.5 h-3.5" /> Download
-          </a>
+            <Download className="w-3.5 h-3.5" /> Download Annotated PDF
+          </button>
         </div>
       </div>
 
@@ -528,6 +575,7 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
                 resourceUrl="https://cdn.syncfusion.com/ej2/28.2.3/dist/ej2-pdfviewer-lib"
                 style={{ height: '675px', width: '100%' }}
                 enableToolbar={true}
+                enableAnnotationToolbar={true}
                 enableNavigation={true}
                 enableBookmark={true}
                 enableThumbnail={true}

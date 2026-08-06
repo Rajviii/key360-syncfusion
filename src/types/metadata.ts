@@ -1,10 +1,10 @@
-export type ViewType = 'grid' | 'gantt' | 'kanban' | 'chart' | 'dashboard' | 'pdf' | 'form';
+export type ViewType = 'grid' | 'gantt' | 'kanban' | 'chart' | 'dashboard' | 'pdf' | 'form' | 'schedule' | 'calendar';
 
-export type WidgetType = 'grid' | 'chart' | 'pie' | 'kpi' | 'gantt' | 'kanban' | 'pdf' | 'form' | 'activity';
+export type WidgetType = 'grid' | 'chart' | 'pie' | 'kpi' | 'gantt' | 'kanban' | 'pdf' | 'form' | 'activity' | 'schedule' | 'calendar';
 
 export type PermissionType = 'create' | 'edit' | 'delete' | 'export' | 'approve' | 'reject';
 
-export type FieldControlType = 
+export type FieldControlType =
   | 'text'
   | 'textarea'
   | 'number'
