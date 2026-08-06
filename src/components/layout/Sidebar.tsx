@@ -68,7 +68,7 @@ const navigationGroups: NavGroup[] = [
         name: 'Employee Directory',
         href: '/employees',
         icon: Users,
-        description: 'Workforce, skills & resume PDF'
+        description: 'Workforce and skills'
       },
       {
         id: 'leaves',

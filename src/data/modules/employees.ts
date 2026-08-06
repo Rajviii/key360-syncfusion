@@ -178,20 +178,20 @@ export const employeesMetadata: ModuleMetadata = {
         }
       ]
     },
-    {
-      id: 'v-pdf',
-      name: 'Document / Resume Viewer',
-      type: 'pdf',
-      icon: 'FileText',
-      widgets: [
-        {
-          id: 'w-pdf-viewer',
-          title: 'Employee Resume Inspection',
-          type: 'pdf',
-          pdfUrl: '/sample.pdf'
-        }
-      ]
-    },
+    // {
+    //   id: 'v-pdf',
+    //   name: 'Document / Resume Viewer',
+    //   type: 'pdf',
+    //   icon: 'FileText',
+    //   widgets: [
+    //     {
+    //       id: 'w-pdf-viewer',
+    //       title: 'Employee Resume Inspection',
+    //       type: 'pdf',
+    //       pdfUrl: '/sample.pdf'
+    //     }
+    //   ]
+    // },
     {
       id: 'v-form',
       name: 'Onboard Employee Form',
