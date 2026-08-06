@@ -1,13 +1,17 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
+  color-scheme: light;
 }
 
 .dark {
   --background: #09090b;
   --foreground: #f4f4f5;
+  color-scheme: dark;
 }
 
 body {
@@ -175,4 +179,18 @@ body {
   background-color: #18181b !important;
   border-color: #27272a !important;
   color: #f4f4f5 !important;
+}
+
+/* Row Cell Vertical Alignment & Custom Badge Template Formatting */
+.e-gantt .e-rowcell,
+.e-grid .e-rowcell {
+  vertical-align: middle !important;
+  line-height: normal !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+.e-gantt .e-rowcell span,
+.e-grid .e-rowcell span {
+  text-decoration: none !important;
 }
