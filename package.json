@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
+    "@capacitor/ios": "^8.5.0",
     "@syncfusion/ej2-react-buttons": "^34.1.30",
     "@syncfusion/ej2-react-calendars": "^34.1.29",
     "@syncfusion/ej2-react-charts": "^34.1.33",
