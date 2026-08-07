@@ -28,6 +28,7 @@ import {
   Freeze,
   IEditCell
 } from '@syncfusion/ej2-react-grids';
+import { DropDownList } from '@syncfusion/ej2-react-dropdowns';
 import {
   ChartComponent,
   SeriesCollectionDirective,
@@ -233,17 +234,26 @@ export const DynamicGrid: React.FC<DynamicGridProps> = ({
     }
   };
 
-  const getEditParams = (field: FieldSchema): IEditCell | undefined => {
-    if (field.options && field.options.length > 0) {
-      return {
-        params: {
-          dataSource: field.options as any,
-          fields: { text: 'label', value: 'value' }
-        }
-      };
-    }
-    return undefined;
-  };
+  // const getEditParams = (field: FieldSchema): any => {
+  //   console.log("field", field);
+  //   if (field.options && field.options.length > 0) {
+  //     return {
+  //       params: {
+  //         dataSource: field.options,
+  //         fields: { text: 'label', value: 'value' }
+  //       }
+  //     };
+  //   }
+  //   return undefined;
+  // };
+
+  const getEditParams = (field: FieldSchema) => ({
+    dataSource: field.options ?? [],
+    fields: {
+      text: "label",
+      value: "value",
+    },
+  });
 
   const aggregateFields = visibleFields.filter(f => f.aggregate);
 
@@ -304,20 +314,23 @@ export const DynamicGrid: React.FC<DynamicGridProps> = ({
         >
           <ColumnsDirective>
             <ColumnDirective type="checkbox" width="50" textAlign="Center" />
-            {visibleFields.map(field => (
-              <ColumnDirective
-                key={field.key}
-                field={field.key}
-                headerText={field.label}
-                width={field.width || (field.key === 'id' ? 90 : 160)}
-                isPrimaryKey={field.key === 'id'}
-                allowSorting={field.allowSorting !== false}
-                allowFiltering={field.allowFiltering !== false}
-                editType={getEditType(field.controlType)}
-                edit={getEditParams(field)}
-                format={field.controlType === 'currency' ? 'C2' : field.format}
-              />
-            ))}
+            {visibleFields.map(field => {
+              const editParams = getEditParams(field);
+              return (
+                <ColumnDirective
+                  key={field.key}
+                  field={field.key}
+                  headerText={field.label}
+                  width={field.width || (field.key === 'id' ? 90 : 160)}
+                  isPrimaryKey={field.key === 'id'}
+                  allowSorting={field.allowSorting !== false}
+                  allowFiltering={field.allowFiltering !== false}
+                  editType={getEditType(field.controlType)}
+                  {...(editParams ? { edit: editParams } : {})}
+                  format={field.controlType === 'currency' ? 'C2' : field.format}
+                />
+              );
+            })}
           </ColumnsDirective>
 
           {aggregateFields.length > 0 && (
