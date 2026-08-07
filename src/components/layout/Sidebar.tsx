@@ -121,6 +121,15 @@ export const Sidebar: React.FC = () => {
     return nameMatch || childMatch;
   };
 
+  const handleNavClick = () => {
+    // Auto-close drawer on mobile when a link is clicked
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      if (preferences.sidebarOpen) {
+        toggleSidebar();
+      }
+    }
+  };
+
   const RenderNavItem: React.FC<{ item: NavItem; depth?: number }> = ({ item, depth = 0 }) => {
     const Icon = item.icon || FileText;
     const hasChildren = Boolean(item.children && item.children.length > 0);
@@ -138,7 +147,7 @@ export const Sidebar: React.FC = () => {
           style={{ paddingLeft: `${Math.max(10, depth * 12 + 10)}px` }}
         >
           {item.href ? (
-            <Link href={item.href} className="flex items-center gap-2 flex-1 min-w-0">
+            <Link href={item.href} onClick={handleNavClick} className="flex items-center gap-2 flex-1 min-w-0">
               <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-500 group-hover:text-blue-600'}`} />
               <span className="truncate">{item.name}</span>
             </Link>
@@ -171,9 +180,10 @@ export const Sidebar: React.FC = () => {
     );
   };
 
+  // Collapsed Sidebar state (Hidden on mobile, w-14 icon bar on desktop)
   if (!preferences.sidebarOpen) {
     return (
-      <div className="w-14 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center py-3 justify-between transition-all sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0">
+      <div className="hidden md:flex w-14 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex-col items-center py-3 justify-between transition-all sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0 z-30">
         <button
           onClick={toggleSidebar}
           className="p-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 cursor-pointer mb-2"
@@ -205,63 +215,73 @@ export const Sidebar: React.FC = () => {
     );
   }
 
+  // Expanded Sidebar state (Overlay drawer on mobile < md, sticky w-60 column on md+)
   return (
-    <aside className="w-60 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-950/80 backdrop-blur-md flex flex-col justify-between p-3 transition-all sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0">
-      <div className="space-y-4">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-            Domain Navigation
-          </span>
-          <button
-            onClick={toggleSidebar}
-            className="p-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 cursor-pointer"
-            title="Collapse Sidebar"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-        </div>
+    <>
+      {/* Mobile Semi-Transparent Backdrop Overlay */}
+      <div
+        onClick={toggleSidebar}
+        className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 md:hidden"
+        aria-hidden="true"
+      />
 
-        <div className="relative px-1">
-          <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            placeholder="Filter menu..."
-            value={filterQuery}
-            onChange={(e) => setFilterQuery(e.target.value)}
-            className="w-full text-xs pl-7 pr-2.5 py-1.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-800 dark:text-zinc-200 outline-none focus:border-blue-500 transition-all placeholder:text-zinc-400"
-          />
-        </div>
+      <aside className="fixed inset-y-0 left-0 z-50 w-64 md:w-60 md:static border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 md:bg-zinc-50/80 md:dark:bg-zinc-950/80 md:backdrop-blur-md flex flex-col justify-between p-3 transition-all md:sticky md:top-16 h-full md:h-[calc(100vh-4rem)] overflow-y-auto shrink-0 shadow-xl md:shadow-none">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+              Domain Navigation
+            </span>
+            <button
+              onClick={toggleSidebar}
+              className="p-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-md hover:bg-zinc-200 dark:hover:bg-zinc-800 cursor-pointer"
+              title="Collapse Sidebar"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          </div>
 
-        <nav className="space-y-4 px-1">
-          {navigationGroups.map(group => {
-            const filteredItems = group.items.filter(item => matchesQuery(item, filterQuery));
-            if (filteredItems.length === 0) return null;
+          <div className="relative px-1">
+            <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2.5" />
+            <input
+              type="text"
+              placeholder="Filter menu..."
+              value={filterQuery}
+              onChange={(e) => setFilterQuery(e.target.value)}
+              className="w-full text-xs pl-7 pr-2.5 py-1.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-800 dark:text-zinc-200 outline-none focus:border-blue-500 transition-all placeholder:text-zinc-400"
+            />
+          </div>
 
-            return (
-              <div key={group.groupName} className="space-y-1">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-2 py-0.5">
-                  {group.groupName}
+          <nav className="space-y-4 px-1">
+            {navigationGroups.map(group => {
+              const filteredItems = group.items.filter(item => matchesQuery(item, filterQuery));
+              if (filteredItems.length === 0) return null;
+
+              return (
+                <div key={group.groupName} className="space-y-1">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-2 py-0.5">
+                    {group.groupName}
+                  </div>
+                  <div className="space-y-0.5">
+                    {filteredItems.map(item => (
+                      <RenderNavItem key={item.id} item={item} />
+                    ))}
+                  </div>
                 </div>
-                <div className="space-y-0.5">
-                  {filteredItems.map(item => (
-                    <RenderNavItem key={item.id} item={item} />
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </nav>
-      </div>
-
-      <div className="p-2.5 bg-blue-50/70 dark:bg-blue-950/30 rounded-lg border border-blue-100 dark:border-blue-900/40 text-[11px]">
-        <div className="font-semibold text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
-          <Layers className="w-3.5 h-3.5 text-blue-600" /> Key360 Architecture
+              );
+            })}
+          </nav>
         </div>
-        <p className="text-[10px] text-blue-700 dark:text-blue-300 mt-0.5 leading-tight">
-          Metadata-driven dynamic layout engine.
-        </p>
-      </div>
-    </aside>
+
+        <div className="p-2.5 bg-blue-50/70 dark:bg-blue-950/30 rounded-lg border border-blue-100 dark:border-blue-900/40 text-[11px] mt-4 md:mt-0">
+          <div className="font-semibold text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
+            <Layers className="w-3.5 h-3.5 text-blue-600" /> Key360 Architecture
+          </div>
+          <p className="text-[10px] text-blue-700 dark:text-blue-300 mt-0.5 leading-tight">
+            Metadata-driven dynamic layout engine.
+          </p>
+        </div>
+      </aside>
+    </>
   );
 };
 

@@ -277,9 +277,9 @@ export const DynamicGrid: React.FC<DynamicGridProps> = ({
   };
 
   return (
-    <div className="w-full bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-1.5 shadow-xs flex flex-col h-[calc(100vh-170px)] min-h-[580px]">
+    <div className="w-full bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-1 sm:p-1.5 shadow-xs flex flex-col h-[calc(100vh-160px)] sm:h-[calc(100vh-170px)] min-h-[420px] sm:min-h-[580px] overflow-hidden">
       {/* Syncfusion DataGrid Component */}
-      <div className="overflow-hidden rounded-lg flex-1 h-full w-full">
+      <div className="overflow-x-auto overflow-y-hidden rounded-lg flex-1 h-full w-full">
         <GridComponent
           ref={gridRef}
           dataSource={data}

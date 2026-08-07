@@ -50,22 +50,22 @@ export const DashboardWidgetRenderer: React.FC<DashboardWidgetRendererProps> = (
   return (
     <div className="w-full space-y-6">
       {/* KPI Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {safeWidgets.filter(w => w?.type === 'kpi').map(widget => (
           <div
             key={widget.id}
-            className="bg-white dark:bg-zinc-900 rounded-xl p-5 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between"
+            className="bg-white dark:bg-zinc-900 rounded-xl p-3.5 sm:p-5 border border-zinc-200 dark:border-zinc-800 shadow-xs flex items-center justify-between"
           >
             <div>
-              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">{widget.title}</p>
-              <h3 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mt-1">
+              <p className="text-[11px] sm:text-xs font-medium text-zinc-500 dark:text-zinc-400">{widget.title}</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100 mt-1">
                 {calculateKpiValue(widget)}
               </h3>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1 font-medium">
+              <p className="text-[10px] sm:text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1 font-medium">
                 <TrendingUp className="w-3 h-3" /> +12.4% vs last period
               </p>
             </div>
-            <div className="p-3 bg-zinc-50 dark:bg-zinc-800/80 rounded-xl border border-zinc-100 dark:border-zinc-800">
+            <div className="p-2.5 sm:p-3 bg-zinc-50 dark:bg-zinc-800/80 rounded-xl border border-zinc-100 dark:border-zinc-800 shrink-0">
               {getKpiIcon(widget.title)}
             </div>
           </div>

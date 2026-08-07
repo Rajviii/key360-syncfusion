@@ -23,19 +23,20 @@ export const DevPanel: React.FC<DevPanelProps> = ({ metadata }) => {
   return (
     <>
       {/* Floating Developer Telemetry Toggle Trigger Button */}
-      <div className="fixed bottom-4 right-4 z-[999]">
+      <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-[999]">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-mono font-semibold text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 rounded-full shadow-lg border border-zinc-700/50 cursor-pointer transition-all hover:scale-105"
+          className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 text-[11px] sm:text-xs font-mono font-semibold text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 rounded-full shadow-lg border border-zinc-700/50 cursor-pointer transition-all hover:scale-105"
         >
-          <Terminal className="w-4 h-4 text-emerald-400 dark:text-emerald-600 animate-pulse" />
-          Dev Panel & Telemetry
+          <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400 dark:text-emerald-600 animate-pulse" />
+          <span className="hidden xs:inline sm:inline">Dev Panel</span>
+          <span className="hidden sm:inline">& Telemetry</span>
         </button>
       </div>
 
       {/* Dev Panel Drawer */}
       {isOpen && (
-        <div className="fixed bottom-16 right-4 z-[999] w-96 bg-zinc-950 text-zinc-100 rounded-2xl border border-zinc-800 shadow-2xl p-5 font-mono text-xs space-y-4">
+        <div className="fixed bottom-14 right-3 sm:bottom-16 sm:right-4 z-[999] w-[calc(100vw-1.5rem)] sm:w-96 bg-zinc-950 text-zinc-100 rounded-2xl border border-zinc-800 shadow-2xl p-4 sm:p-5 font-mono text-xs space-y-4">
           <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
             <div className="flex items-center gap-2">
               <Cpu className="w-4 h-4 text-blue-400" />

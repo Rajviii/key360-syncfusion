@@ -55,21 +55,14 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ metadata }) => {
   return (
     <div className="w-full space-y-3">
       {/* Streamlined Header & View Navigation Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
         <div className="flex items-center gap-2.5 flex-wrap">
-          <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">{metadata.name}</h2>
-          {/* <span className="text-[10px] px-2 py-0.5 font-bold uppercase tracking-wider bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 rounded-md border border-blue-200 dark:border-blue-800">
-            {metadata.provider}
-          </span> */}
-          {/* <span className="inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 rounded-full border border-emerald-200 dark:border-emerald-800/80">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Virtual Scrolling Active ({data.length} records)
-          </span> */}
+          <h2 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">{metadata.name}</h2>
         </div>
 
         {/* View Navigation Tabs & Compact Add Action */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800/80 p-1 rounded-lg border border-zinc-200 dark:border-zinc-700/80">
+        <div className="flex items-center gap-2 max-w-full overflow-x-auto no-scrollbar py-0.5">
+          <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800/80 p-1 rounded-lg border border-zinc-200 dark:border-zinc-700/80 shrink-0">
             {metadata.views.map(view => {
               const isActive = view.id === activeViewId;
               return (
@@ -79,7 +72,7 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ metadata }) => {
                     setActiveViewId(view.id);
                     setIsFormOpen(false);
                   }}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md transition-all cursor-pointer whitespace-nowrap ${isActive
+                  className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 text-xs font-medium rounded-md transition-all cursor-pointer whitespace-nowrap ${isActive
                     ? 'bg-white dark:bg-zinc-900 text-blue-600 dark:text-blue-400 shadow-xs border border-zinc-200 dark:border-zinc-700 font-semibold'
                     : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                     }`}
@@ -90,16 +83,6 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ metadata }) => {
               );
             })}
           </div>
-
-          {/* {metadata.permissions?.includes('create') && (
-            <button
-              onClick={() => setIsFormOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition-colors cursor-pointer"
-            >
-              <FilePlus className="w-3.5 h-3.5" />
-              Add Record
-            </button>
-          )} */}
         </div>
       </div>
 

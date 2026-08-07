@@ -4,28 +4,30 @@ import React from 'react';
 import { useUIPreferences } from '@/context/UIPreferencesContext';
 import { ThemePreset, DensityType } from '@/types/preferences';
 import { ProviderFactory } from '@/providers/ProviderFactory';
-import { Palette, Layers, Database, Sparkles, SlidersHorizontal, Sun, Moon } from 'lucide-react';
+import { Palette, Layers, Database, Sparkles, SlidersHorizontal, Sun, Moon, Menu, X } from 'lucide-react';
 
 export const Header: React.FC = () => {
-  const { preferences, setTheme, setColorMode, setDensity } = useUIPreferences();
+  const { preferences, setTheme, setColorMode, setDensity, toggleSidebar } = useUIPreferences();
   const activeProvider = ProviderFactory.getActiveProviderType();
   const isDark = preferences.colorMode === 'dark';
 
   return (
-    <header className="h-16 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-[100] px-6 flex items-center justify-between">
-      {/* Brand Title */}
-      <div className="flex items-center gap-3">
-        {/* <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-md">
-          <Sparkles className="w-5 h-5 text-white" />
-        </div> */}
+    <header className="h-16 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-[100] px-3 sm:px-6 flex items-center justify-between">
+      {/* Mobile Hamburger & Brand Title */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        <button
+          onClick={toggleSidebar}
+          className="md:hidden p-2 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+          title="Toggle Navigation Menu"
+          aria-label="Toggle Navigation Menu"
+        >
+          {preferences.sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+
         <div>
-          <h1 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+          <h1 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 truncate">
             KEY360 Enterprise Portal
-            {/* <span className="text-[10px] font-semibold px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-800">
-              Syncfusion Dynamic Engine
-            </span> */}
           </h1>
-          {/* <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Metadata-Driven Architecture with .NET & MCP API Adapters</p> */}
         </div>
       </div>
 
