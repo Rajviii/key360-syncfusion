@@ -134,7 +134,7 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ metadata }) => {
     });
 
     if (editingRecord && editingRecord.id === formData.id) {
-      await updateRecord({ id: editingRecord.id, data: formData });
+      await updateRecord({ id: editingRecord.id, record: formData });
     } else {
       await createRecord(formData);
     }
