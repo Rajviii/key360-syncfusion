@@ -41,7 +41,7 @@ export default function EditProjectReviewClient({ params: initialParams }: { par
               </span>
             </h2>
             <p className="text-xs text-zinc-500 font-medium mt-0.5">
-              Manager: <span className="font-semibold text-zinc-700 dark:text-zinc-300">{initialValues?.projectManager}</span> | Review Date: {initialValues?.reviewDate} | Report #: 001
+              Manager: <span className="font-semibold text-zinc-700 dark:text-zinc-300">{initialValues?.projectManager}</span> | Review Date: {initialValues?.reportDate || initialValues?.reviewDate || '2026-08-18'} | Report #: 001
             </p>
           </div>
         </div>

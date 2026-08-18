@@ -8,6 +8,7 @@ export const projectReviewsMockData = [
     projectName: 'Substation Telemetry & High-Voltage Upgrade',
     updateReference: 'Q3 Status Update - Rev A',
     reportDate: '2026-08-18',
+    reviewDate: '2026-08-18',
     projectManager: 'Prajapati, Rajvi',
     originator: 'Prajapati, Rajvi',
     lastUpdateDate: '2026-08-18 11:30 AM',
