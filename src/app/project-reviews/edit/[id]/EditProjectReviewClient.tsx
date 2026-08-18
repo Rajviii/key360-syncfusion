@@ -73,32 +73,32 @@ export default function EditProjectReviewClient({ params: initialParams }: { par
 
         <div className="p-3.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xs">
           <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Planned / Actual</p>
-          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.plannedPercentComplete}% / {initialValues?.actualPercentComplete}%</p>
-          <span className="text-[10px] text-zinc-500 font-medium">Var: {initialValues?.scheduleVariance}</span>
+          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.plannedPercentComplete ?? initialValues?.percentCompletePlanned ?? 68}% / {initialValues?.actualPercentComplete ?? initialValues?.percentCompleteActual ?? 61}%</p>
+          <span className="text-[10px] text-zinc-500 font-medium">Var: {initialValues?.scheduleVariance ?? initialValues?.progressVariance ?? -7}%</span>
         </div>
 
         <div className="p-3.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xs">
           <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">CPI (Cost Index)</p>
-          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.totalCpi}</p>
+          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.totalCpi ?? 0.98}</p>
           <span className="text-[10px] text-zinc-400">Target: 1.0</span>
         </div>
 
         <div className="p-3.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xs">
           <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">SPI (Schedule Index)</p>
-          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.totalSpi}</p>
+          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.totalSpi ?? 0.94}</p>
           <span className="text-[10px] text-zinc-400">Target: 1.0</span>
         </div>
 
         <div className="p-3.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xs">
           <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Open Risks</p>
-          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.riskCount} Total</p>
+          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.riskCount ?? 4} Total</p>
           <span className="text-[10px] text-zinc-500 font-medium">1 Critical</span>
         </div>
 
         <div className="p-3.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xs">
           <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Technical Queries</p>
-          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.tqCount} Open</p>
-          <span className="text-[10px] text-zinc-400">{initialValues?.earlyWarningsCount} Early Warnings</span>
+          <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 mt-0.5">{initialValues?.tqCount ?? 2} Open</p>
+          <span className="text-[10px] text-zinc-400">{initialValues?.ewCount ?? initialValues?.earlyWarningsCount ?? 3} Early Warnings</span>
         </div>
       </div>
 
@@ -108,7 +108,7 @@ export default function EditProjectReviewClient({ params: initialParams }: { par
         <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xs space-y-2.5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Financial Pipeline Summary</span>
-            <span className="text-xs font-mono text-zinc-500">Cur: R {initialValues?.currentBudget?.toLocaleString()}</span>
+            <span className="text-xs font-mono text-zinc-500">Cur: R {initialValues?.currentBudget?.toLocaleString() ?? '2,520,000'}</span>
           </div>
           <div className="grid grid-cols-4 gap-2 text-center text-xs">
             <div className="p-2 rounded bg-zinc-50 dark:bg-zinc-800/70 border border-zinc-200 dark:border-zinc-700">
@@ -134,26 +134,26 @@ export default function EditProjectReviewClient({ params: initialParams }: { par
         <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xs space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">Progress Tracking</span>
-            <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Variance: {initialValues?.scheduleVariance}</span>
+            <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Variance: {initialValues?.scheduleVariance ?? initialValues?.progressVariance ?? -7}%</span>
           </div>
 
           <div>
             <div className="flex justify-between text-[11px] font-medium text-zinc-600 dark:text-zinc-400 mb-1">
               <span>Planned Progress</span>
-              <span>{initialValues?.plannedPercentComplete}%</span>
+              <span>{initialValues?.plannedPercentComplete ?? initialValues?.percentCompletePlanned ?? 68}%</span>
             </div>
             <div className="w-full h-2 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
-              <div className="h-full bg-emerald-800 rounded-full" style={{ width: `${initialValues?.plannedPercentComplete || 68}%` }} />
+              <div className="h-full bg-emerald-800 rounded-full" style={{ width: `${initialValues?.plannedPercentComplete ?? initialValues?.percentCompletePlanned ?? 68}%` }} />
             </div>
           </div>
 
           <div>
             <div className="flex justify-between text-[11px] font-medium text-zinc-600 dark:text-zinc-400 mb-1">
               <span>Actual Progress</span>
-              <span>{initialValues?.actualPercentComplete}%</span>
+              <span>{initialValues?.actualPercentComplete ?? initialValues?.percentCompleteActual ?? 61}%</span>
             </div>
             <div className="w-full h-2 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
-              <div className="h-full bg-emerald-600 rounded-full" style={{ width: `${initialValues?.actualPercentComplete || 61}%` }} />
+              <div className="h-full bg-emerald-600 rounded-full" style={{ width: `${initialValues?.actualPercentComplete ?? initialValues?.percentCompleteActual ?? 61}%` }} />
             </div>
           </div>
         </div>

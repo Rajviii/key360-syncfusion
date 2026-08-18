@@ -44,10 +44,13 @@ export const projectReviewsMockData = [
     finishDateBL: '2026-11-30',
     finishDate: '2026-12-15',
     percentCompletePlanned: 68,
+    plannedPercentComplete: 68,
     percentCompleteActual: 61,
+    actualPercentComplete: 61,
     plannedPercentGained: 5,
     actualPercentGained: 4,
     progressVariance: -7.0,
+    scheduleVariance: -7.0,
     progressUpdateComments: 'Substation #2 wiring in progress.',
 
     // Earned Value
