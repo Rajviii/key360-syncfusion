@@ -1,0 +1,152 @@
+/*  SMG CMMS — design layer
+ *
+ *  Additive. Import once, after the existing variable blocks in index.css:
+ *      @import './smg-design.css';
+ *
+ *  Nothing here changes existing behaviour on its own — it overrides the
+ *  CSS variables index.css already defines, and adds new utility classes
+ *  that take effect only where they are used.
+ */
+
+/* ── variable overrides ────────────────────────────────────────────────
+   index.css already defines these; later declarations win.               */
+
+:root {
+  --primary-color: #0080ea;   /* SMG logo blue — primary actions */
+  --secondary-color: #6d7f90;
+  --accent-color: #1f78b6;    /* Sky 4 */
+
+  --bg: #f4f7fa;
+  --fg: #182028;
+  --muted-fg: #536472;
+  --surface: #ffffff;
+  --border-color: #dfe6ed;
+
+  --border-radius: 14px;
+  --font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  /* glass recipe — used by the utilities below */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.85);
+  --glass-shadow: 0 20px 50px -22px rgba(90, 120, 170, 0.34),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  --glass-shadow-lg: 0 34px 70px -26px rgba(90, 120, 170, 0.42),
+                     inset 0 1px 0 rgba(255, 255, 255, 0.85);
+
+  /* data surfaces stay near-opaque so text keeps full contrast */
+  --data-surface: rgba(255, 255, 255, 0.86);
+  --hairline: rgba(120, 145, 180, 0.18);
+}
+
+.dark {
+  --bg: #0f131a;
+  --fg: #e2e9eb;
+  --muted-fg: #aebcc2;
+  --surface: #151c20;
+  --border-color: #2a363c;
+
+  --glass-bg: rgba(255, 255, 255, 0.055);
+  --glass-bg-strong: rgba(255, 255, 255, 0.085);
+  --glass-border: rgba(255, 255, 255, 0.13);
+  --glass-shadow: 0 22px 54px -24px rgba(0, 0, 0, 0.70),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  --glass-shadow-lg: 0 36px 76px -28px rgba(0, 0, 0, 0.80),
+                     inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  --data-surface: rgba(255, 255, 255, 0.045);
+  --hairline: rgba(255, 255, 255, 0.11);
+}
+
+/* ── page ground ──────────────────────────────────────────────────────
+   A soft gradient rather than a flat fill. Glass needs something behind
+   it to frost; over a flat colour it reads as murky grey.               */
+
+body {
+  background: radial-gradient(125% 125% at 28% 14%, #fdfdfb 0%, #f4f6f9 46%, #eaeff6 100%);
+  background-attachment: fixed;
+}
+
+.dark body {
+  background: radial-gradient(125% 125% at 28% 14%, #1c212b 0%, #151a23 46%, #0f131a 100%);
+  background-attachment: fixed;
+}
+
+/* ── glass surfaces ───────────────────────────────────────────────────
+   Use on CHROME: sidebar, header, cards, modals, picker panels, stat
+   tiles. Do NOT use on tables or dense data — blur behind 13px text
+   degrades legibility and costs GPU on large grids.                     */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border: 0.5px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(26px) saturate(170%);
+  -webkit-backdrop-filter: blur(26px) saturate(170%);
+  border: 0.5px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-lg);
+}
+
+/* Data surfaces — inside a glass panel, not glass themselves. */
+.data-surface {
+  background: var(--data-surface);
+}
+
+.hairline {
+  border-color: var(--hairline);
+}
+
+/* ── modal scrim ──────────────────────────────────────────────────────
+   A light blur rather than 40% black. Keeps the page legible behind.    */
+
+.scrim {
+  background: rgba(44, 60, 86, 0.16);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.dark .scrim {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* ── type helpers ─────────────────────────────────────────────────────
+   Display type light, data type normal. The hairline weight is for
+   headings and large numbers only.                                      */
+
+.type-display {
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+.type-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+}
+
+/* Numeric columns line up only with tabular figures. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── motion ───────────────────────────────────────────────────────────
+   No ambient animation by design. State transitions only.               */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -59,6 +59,17 @@ export interface FieldSchema {
   allowFiltering?: boolean;
   groupable?: boolean;
   aggregate?: 'sum' | 'count' | 'average' | 'min' | 'max';
+  section?: string;
+  readonly?: boolean;
+}
+
+export interface FormSectionSchema {
+  id: string;
+  title: string;
+  type?: 'fields' | 'grid';
+  defaultExpanded?: boolean;
+  nestedGridFields?: FieldSchema[];
+  nestedGridData?: any[];
 }
 
 export interface GridWidgetConfig {
@@ -73,6 +84,7 @@ export interface GridWidgetConfig {
   allowPdfExport?: boolean;
   editMode?: 'Inline' | 'Dialog' | 'Batch';
   frozenColumns?: number;
+  ganttWidget?: GanttWidgetConfig;
 }
 
 export interface ChartWidgetConfig {
@@ -168,6 +180,7 @@ export interface ModuleMetadata {
   permissions: PermissionType[];
   views: ViewConfig[];
   fields: FieldSchema[];
+  formSections?: FormSectionSchema[];
   mockData?: any[];
   customActions?: CustomAction[];
 }

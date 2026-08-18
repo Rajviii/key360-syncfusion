@@ -3,11 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/lib/syncfusion-license";
 
-// Dynamic Syncfusion theme is loaded via ThemeService in AppProviders
-
 import { AppProviders } from "@/components/providers/AppProviders";
-import { Header } from "@/components/layout/Header";
-import Sidebar from "@/components/layout/Sidebar";
+import { MainLayoutWrapper } from "@/components/layout/MainLayoutWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,15 +33,9 @@ export default function RootLayout({
     >
       <body className="min-h-screen flex flex-col bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-sans transition-colors duration-200">
         <AppProviders>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <div className="flex flex-1">
-              <Sidebar />
-              <main className="flex-1 p-3 sm:p-5 lg:p-8 min-w-0 w-full overflow-x-hidden">
-                {children}
-              </main>
-            </div>
-          </div>
+          <MainLayoutWrapper>
+            {children}
+          </MainLayoutWrapper>
         </AppProviders>
       </body>
     </html>

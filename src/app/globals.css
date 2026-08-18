@@ -5,12 +5,18 @@
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
+  --key360-green: #007a4d;
+  --key360-green-hover: #00623e;
+  --key360-green-text: #ffffff;
   color-scheme: light;
 }
 
 .dark {
   --background: #09090b;
   --foreground: #f4f4f5;
+  --key360-green: #007a4d;
+  --key360-green-hover: #00623e;
+  --key360-green-text: #ffffff;
   color-scheme: dark;
 }
 
@@ -19,6 +25,37 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ==========================================================================
+   Key360 Unified Design Tokens & Generic UI Utilities
+   ========================================================================== */
+.key360-bg-primary {
+  background-color: #007a4d !important;
+  color: #ffffff !important;
+}
+
+.key360-pill-active {
+  background-color: #007a4d !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.key360-btn-primary {
+  background-color: #007a4d !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  transition: all 0.15s ease-in-out !important;
+}
+.key360-btn-primary:hover {
+  background-color: #00623e !important;
+}
+
+.key360-section-banner {
+  background-color: #007a4d !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
 }
 
 /* Custom Scrollbar & Mobile Scroll Utilities */
@@ -30,6 +67,120 @@ body {
   scrollbar-width: none;
 }
 
+/* ==========================================================================
+   Syncfusion Master Green Theme Override (#007a4d)
+   Replaces ALL default Syncfusion Purple, Violet & Blue accent colors across light & dark modes
+   ========================================================================== */
+
+/* Syncfusion Grid Container Single Border & Radius */
+.e-grid {
+  border-radius: 0.75rem !important;
+  border: 1px solid #e4e4e7 !important;
+  overflow: hidden !important;
+}
+
+.dark .e-grid {
+  border-color: #27272a !important;
+}
+
+/* 1. Syncfusion Checkboxes & Checkbox Frames (Grid Rows, Header Select-All, Column Chooser, Filters) */
+.e-checkbox-wrapper .e-frame.e-check,
+.e-css.e-checkbox-wrapper .e-frame.e-check,
+.e-checkbox-wrapper .e-checkbox:checked + .e-frame,
+.e-css.e-checkbox-wrapper .e-checkbox:checked + .e-frame,
+.e-grid .e-checkbox-wrapper .e-frame.e-check,
+.e-ccdlg .e-checkbox-wrapper .e-frame.e-check {
+  background-color: #007a4d !important;
+  border-color: #007a4d !important;
+  color: #ffffff !important;
+}
+
+.e-checkbox-wrapper:hover .e-frame.e-check,
+.e-css.e-checkbox-wrapper:hover .e-frame.e-check {
+  background-color: #00623e !important;
+  border-color: #00623e !important;
+}
+
+.e-checkbox-wrapper .e-frame.e-check:before,
+.e-css.e-checkbox-wrapper .e-frame.e-check:before {
+  color: #ffffff !important;
+}
+
+/* 2. Syncfusion Primary Buttons (Column Chooser OK Button, Dialog Submit Buttons) */
+.e-btn.e-primary,
+.e-css.e-btn.e-primary,
+.e-dialog .e-btn.e-primary,
+.e-btn.e-flat.e-primary,
+.e-ccdlg .e-btn.e-primary {
+  background-color: #007a4d !important;
+  border-color: #007a4d !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.e-btn.e-primary:hover,
+.e-css.e-btn.e-primary:hover,
+.e-dialog .e-btn.e-primary:hover,
+.e-btn.e-flat.e-primary:hover,
+.e-ccdlg .e-btn.e-primary:hover {
+  background-color: #00623e !important;
+  border-color: #00623e !important;
+  color: #ffffff !important;
+}
+
+.e-btn.e-primary:focus,
+.e-css.e-btn.e-primary:focus,
+.e-dialog .e-btn.e-primary:focus {
+  background-color: #00623e !important;
+  border-color: #00623e !important;
+  box-shadow: 0 0 0 2px rgba(0, 122, 77, 0.3) !important;
+}
+
+/* 3. Syncfusion Inputs, Search Focus Borders & Outlines (Column Chooser Search Input) */
+.e-input-group:focus-within,
+.e-input-group.e-input-focus,
+.e-input-group.e-control-wrapper.e-input-focus,
+.e-control-wrapper.e-input-group.e-input-focus,
+.e-outline.e-input-group.e-input-focus,
+.e-outline.e-control-wrapper.e-input-focus,
+.e-ccdlg .e-input-group.e-input-focus {
+  border-color: #007a4d !important;
+  box-shadow: 0 0 0 1px #007a4d !important;
+}
+
+/* 4. Active List Items, Dropdown Selections, Calendar Selected Dates & Context Menu Items */
+.e-dropdownbase .e-list-item.e-active,
+.e-dropdownbase .e-list-item.e-active.e-hover,
+.e-dropdownbase .e-list-item.e-hover,
+.e-contextmenu .e-menu-item.e-focused,
+.e-contextmenu .e-menu-item.e-selected,
+.e-menu-wrapper .e-menu-item.e-focused,
+.e-calendar .e-content td.e-focused-date,
+.e-calendar .e-content td.e-selected,
+.e-datepicker .e-calendar .e-content td.e-selected {
+  background-color: #007a4d !important;
+  color: #ffffff !important;
+}
+
+/* 5. Pagination Active Page Button */
+.e-grid .e-pager .e-currentitem,
+.e-grid .e-pager .e-currentitem:hover {
+  background-color: #007a4d !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* 6. Radio Buttons & Switches */
+.e-radio-wrapper .e-frame.e-check,
+.e-radio-wrapper .e-radio:checked + .e-frame {
+  background-color: #007a4d !important;
+  border-color: #007a4d !important;
+}
+
+.e-switch-wrapper.e-switch-active .e-switch-inner,
+.e-switch-wrapper.e-switch-active .e-switch-handle {
+  background-color: #007a4d !important;
+}
 
 /* ==========================================================================
    Syncfusion Deep Dark Theme Overrides & Polish (Scoped strictly to .dark)
@@ -104,14 +255,13 @@ body {
 }
 
 .dark .e-grid .e-pager .e-currentitem {
-  background-color: #2563eb !important;
+  background-color: #007a4d !important;
   color: #ffffff !important;
 }
 
 /* Syncfusion Input Fields, Dropdowns, DatePickers & Form Controls in Dark Mode */
 .dark .e-input-group,
-.dark .e-control-wrapper.e-input-group,
-.dark .e-input-group.e-control-wrapper {
+.dark .e-control-wrapper.e-input-group {
   background-color: #18181b !important;
   border-color: #3f3f46 !important;
   color: #f4f4f5 !important;
@@ -129,8 +279,8 @@ body {
 
 .dark .e-input-group:focus-within,
 .dark .e-input-group.e-input-focus {
-  border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 1px #3b82f6 !important;
+  border-color: #007a4d !important;
+  box-shadow: 0 0 0 1px #007a4d !important;
 }
 
 /* Dropdown, Calendar & Excel Filter Popups in Dark Mode */
@@ -156,7 +306,7 @@ body {
 .dark .e-menu-wrapper .e-menu-item.e-focused,
 .dark .e-calendar .e-content td.e-focused-date,
 .dark .e-calendar .e-content td.e-selected {
-  background-color: #2563eb !important;
+  background-color: #007a4d !important;
   color: #ffffff !important;
 }
 
@@ -245,4 +395,16 @@ body {
 .e-pdfviewer .e-pv-toolbar,
 .e-pdfviewer .e-pv-viewer-container {
   width: 100% !important;
+}
+
+/* ==========================================================================
+   Syncfusion Column Chooser Positioning (Top-Left under Field Chooser Button)
+   ========================================================================== */
+.e-grid .e-ccdlg,
+.e-dialog.e-ccdlg {
+  top: 42px !important;
+  left: 12px !important;
+  max-height: 440px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
 }

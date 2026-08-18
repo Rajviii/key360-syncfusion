@@ -3,8 +3,10 @@
 import '@/lib/syncfusion-license';
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { UIPreferencesProvider } from '@/context/UIPreferencesContext';
+import { AuthProvider } from '@/context/AuthContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 import '@/data/modules/registry';
+import { UIPreferencesProvider } from '@/context/UIPreferencesContext';
 
 export const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [queryClient] = useState(
@@ -21,7 +23,11 @@ export const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UIPreferencesProvider>{children}</UIPreferencesProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <UIPreferencesProvider>{children}</UIPreferencesProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };

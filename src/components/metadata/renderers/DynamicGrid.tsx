@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import {
   GridComponent,
   ColumnsDirective,
@@ -25,10 +25,8 @@ import {
   VirtualScroll,
   ContextMenu,
   Resize,
-  Freeze,
-  IEditCell
+  Freeze
 } from '@syncfusion/ej2-react-grids';
-import { DropDownList } from '@syncfusion/ej2-react-dropdowns';
 import {
   ChartComponent,
   SeriesCollectionDirective,
@@ -38,6 +36,10 @@ import {
   LineSeries,
   AreaSeries,
   BarSeries,
+  StackingColumnSeries,
+  StackingBarSeries,
+  StackingLineSeries,
+  StackingAreaSeries,
   ScatterSeries,
   Category,
   Tooltip as ChartTooltip,
@@ -49,8 +51,9 @@ import {
   PieSeries,
   AccumulationTooltip
 } from '@syncfusion/ej2-react-charts';
+import { DynamicGantt } from './DynamicGantt';
 import { FieldSchema, GridWidgetConfig, PermissionType } from '@/types/metadata';
-import { Download, FileSpreadsheet, Plus, Trash2, Edit3, Search, BarChart2, X, PieChart, LineChart, Activity } from 'lucide-react';
+import { LayoutGrid, BarChart2, Calendar, CalendarOff, Search, Plus, Trash2, Edit3, X, RefreshCw, Copy, Save, FileSpreadsheet } from 'lucide-react';
 
 interface DynamicGridProps {
   fields: FieldSchema[];
@@ -59,7 +62,9 @@ interface DynamicGridProps {
   permissions?: PermissionType[];
   onAddRecord?: () => void;
   onEditRecord?: (row: any) => void;
+  onCopyRecord?: (row: any) => void;
   onDeleteRecord?: (id: any) => void;
+  onOpenStatusHistory?: (row: any) => void;
 }
 
 export const DynamicGrid: React.FC<DynamicGridProps> = ({
@@ -69,24 +74,20 @@ export const DynamicGrid: React.FC<DynamicGridProps> = ({
   permissions = ['create', 'edit', 'delete', 'export'],
   onAddRecord,
   onEditRecord,
-  onDeleteRecord
+  onCopyRecord,
+  onDeleteRecord,
+  onOpenStatusHistory
 }) => {
   const gridRef = useRef<GridComponent>(null);
 
-  // Chart Integration Modal States
-  const [isChartModalOpen, setIsChartModalOpen] = useState(false);
+  // Generic View Switcher State (Grid | Chart | Gantt)
+  const [activeInlineView, setActiveInlineView] = useState<'grid' | 'chart' | 'gantt'>('grid');
+
+  // Chart Integration States
   const [chartType, setChartType] = useState<string>('Column');
   const [chartXField, setChartXField] = useState<string>('');
   const [chartYField, setChartYField] = useState<string>('');
   const [chartData, setChartData] = useState<any[]>([]);
-  const [selectedCount, setSelectedCount] = useState<number>(0);
-
-  const handleRowSelection = () => {
-    if (gridRef.current) {
-      const selected = gridRef.current.getSelectedRecords();
-      setSelectedCount(selected.length);
-    }
-  };
 
   const visibleFields = fields.filter(f => f.showInGrid !== false);
   const numericFields = fields.filter(f => f.showInGrid !== false && (f.controlType === 'number' || f.controlType === 'currency' || f.controlType === 'rating'));
@@ -97,118 +98,116 @@ export const DynamicGrid: React.FC<DynamicGridProps> = ({
   const canEdit = permissions.includes('edit');
   const canDelete = permissions.includes('delete');
 
-  const toolbarItems: any[] = [];
+  // Determine if current module dataset contains valid Gantt date/duration fields
+  const hasGanttFields = useMemo(() => {
+    if (!data || data.length === 0) return false;
+    const sample = data[0];
+    const dateKeys = ['startDate', 'endDate', 'duration', 'workDate', 'dueDate', 'lastUpdateDate', 'reviewDate'];
+    return dateKeys.some(k => k in sample && sample[k] !== undefined && sample[k] !== null);
+  }, [data]);
+
+  // Formatted Gantt dataset mapping when applicable
+  const ganttData = useMemo(() => {
+    if (!hasGanttFields) return [];
+    return data.map((item, idx) => ({
+      id: item.id || item.code || idx + 1,
+      name: item.name || item.projectName || item.description || item.code || `Item ${idx + 1}`,
+      startDate: item.startDate || item.workDate || item.reviewDate || '2026-08-01',
+      endDate: item.endDate || item.dueDate || item.lastUpdateDate || '2026-08-30',
+      duration: item.duration || 10,
+      progress: item.progress || item.actualPercentComplete || 50,
+      assignee: item.assignee || item.manager || item.projectManager || item.employee || item.owner || 'Unassigned',
+      status: item.status || item.currentStatus || item.overallStatus || 'In Progress'
+    }));
+  }, [data, hasGanttFields]);
+
+  // Generic Grid Toolbar Items with Custom Template for View Buttons
+  const toolbarItems: any[] = [
+    {
+      template: () => (
+        <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800/80 p-1 rounded-lg border border-zinc-200 dark:border-zinc-700/80 mr-2 my-0.5">
+          <button
+            type="button"
+            onClick={() => setActiveInlineView('grid')}
+            title="Grid View"
+            className={`px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeInlineView === 'grid'
+                ? 'bg-[#007a4d] text-white shadow-xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+            }`}
+          >
+            <LayoutGrid className="w-3.5 h-3.5" />
+            <span>Grid</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const selectedRecords = gridRef.current ? gridRef.current.getSelectedRecords() : [];
+              const recordsToChart = selectedRecords.length > 0 ? selectedRecords : data;
+              const defaultX = categoryFields[0] || visibleFields[0];
+              const defaultY = numericFields[0] || visibleFields[1] || visibleFields[0];
+              setChartXField(defaultX?.key || visibleFields[0]?.key || 'name');
+              setChartYField(defaultY?.key || visibleFields[1]?.key || 'id');
+              setChartData(recordsToChart);
+              setActiveInlineView('chart');
+            }}
+            title="Chart View"
+            className={`px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeInlineView === 'chart'
+                ? 'bg-[#007a4d] text-white shadow-xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+            }`}
+          >
+            <BarChart2 className="w-3.5 h-3.5" />
+            <span>Chart</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveInlineView('gantt')}
+            title="Gantt View"
+            className={`px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeInlineView === 'gantt'
+                ? 'bg-[#007a4d] text-white shadow-xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+            }`}
+          >
+            <Calendar className="w-3.5 h-3.5" />
+            <span>Gantt</span>
+          </button>
+        </div>
+      ),
+      id: 'view_switcher_group'
+    }
+  ];
+
+  // Standard Editing & Export Options
   if (canCreate) toolbarItems.push('Add');
   if (canEdit) toolbarItems.push('Edit');
   if (canDelete) toolbarItems.push('Delete');
+  if (canCreate) toolbarItems.push({ text: '', tooltipText: 'Copy / Duplicate', prefixIcon: 'e-copy', id: 'copy_record' });
   if (canEdit || canCreate) {
     toolbarItems.push('Update');
     toolbarItems.push('Cancel');
   }
-  toolbarItems.push('Search');
-  if (config.allowColumnChooser !== false) toolbarItems.push('ColumnChooser');
   if (canExport && config.allowExcelExport !== false) toolbarItems.push('ExcelExport');
   if (canExport && config.allowPdfExport !== false) toolbarItems.push('PdfExport');
-  toolbarItems.push({
-    text: 'Visualize Chart',
-    tooltipText: 'Integrate & Visualize Chart from Grid Data',
-    prefixIcon: 'e-icons e-chart',
-    id: 'grid_toolbar_chart'
-  });
-
-  // Context Menu Items matching user design
-  const contextMenuItems: any[] = [
-    'AutoFit',
-    'AutoFitAll',
-    'SortAscending',
-    'SortDescending',
-    'Copy',
-    'PdfExport',
-    'ExcelExport',
-    {
-      text: 'Chart',
-      target: '.e-content',
-      id: 'grid_chart_menu',
-      iconCss: 'e-icons e-chart',
-      items: [
-        {
-          text: 'Line Chart',
-          id: 'chart_line_group',
-          items: [
-            { text: 'Line', id: 'chart_Line' },
-            { text: 'Stacked Line', id: 'chart_StackedLine' },
-            { text: '100% Stacked Line', id: 'chart_100StackedLine' }
-          ]
-        },
-        {
-          text: 'Area Chart',
-          id: 'chart_area_group',
-          items: [
-            { text: 'Area', id: 'chart_Area' },
-            { text: 'Stacked Area', id: 'chart_StackedArea' }
-          ]
-        },
-        {
-          text: 'Column Chart',
-          id: 'chart_column_group',
-          items: [
-            { text: 'Column', id: 'chart_Column' },
-            { text: 'Stacked Column', id: 'chart_StackedColumn' }
-          ]
-        },
-        {
-          text: 'Bar Chart',
-          id: 'chart_bar_group',
-          items: [
-            { text: 'Bar', id: 'chart_Bar' },
-            { text: 'Stacked Bar', id: 'chart_StackedBar' }
-          ]
-        },
-        { text: 'Scatter Chart', id: 'chart_Scatter' },
-        {
-          text: 'Pie Chart',
-          id: 'chart_pie_group',
-          items: [
-            { text: 'Pie', id: 'chart_Pie' },
-            { text: 'Doughnut', id: 'chart_Doughnut' }
-          ]
-        }
-      ]
-    }
-  ];
-
-  const openChartModal = (selectedType: string = 'Column') => {
-    const selectedRecords = gridRef.current ? gridRef.current.getSelectedRecords() : [];
-    const recordsToChart = selectedRecords.length > 0 ? selectedRecords : data;
-
-    const defaultX = categoryFields[0] || visibleFields[0];
-    const defaultY = numericFields[0] || visibleFields[1] || visibleFields[0];
-
-    setChartXField(defaultX?.key || 'name');
-    setChartYField(defaultY?.key || 'budget');
-    setChartData(recordsToChart);
-    setChartType(selectedType);
-    setIsChartModalOpen(true);
-  };
-
-  const handleContextMenuClick = (args: any) => {
-    if (args.item.id && args.item.id.startsWith('chart_')) {
-      const selectedType = args.item.id.replace('chart_', '');
-      if (['line_group', 'area_group', 'column_group', 'bar_group', 'pie_group'].includes(selectedType)) {
-        return;
-      }
-      openChartModal(selectedType);
-    }
-  };
+  if (config.allowColumnChooser !== false) toolbarItems.push('ColumnChooser');
+  toolbarItems.push('Search');
 
   const handleToolbarClick = (args: any) => {
-    if (!gridRef.current) return;
-    if (args.item.id.includes('excelexport')) {
-      gridRef.current.excelExport();
-    } else if (args.item.id.includes('pdfexport')) {
-      gridRef.current.pdfExport();
-    } else if (args.item.id.includes('grid_toolbar_chart')) {
-      openChartModal('Column');
+    const itemId = args.item?.id || '';
+
+    if (itemId === 'copy_record') {
+      const selected = gridRef.current?.getSelectedRecords();
+      if (selected && selected.length > 0 && onCopyRecord) {
+        onCopyRecord(selected[0]);
+      } else if (onAddRecord) {
+        onAddRecord();
+      }
+    } else if (itemId.includes('excelexport')) {
+      gridRef.current?.excelExport();
+    } else if (itemId.includes('pdfexport')) {
+      gridRef.current?.pdfExport();
     }
   };
 
@@ -234,277 +233,441 @@ export const DynamicGrid: React.FC<DynamicGridProps> = ({
     }
   };
 
-  // const getEditParams = (field: FieldSchema): any => {
-  //   console.log("field", field);
-  //   if (field.options && field.options.length > 0) {
-  //     return {
-  //       params: {
-  //         dataSource: field.options,
-  //         fields: { text: 'label', value: 'value' }
-  //       }
-  //     };
-  //   }
-  //   return undefined;
-  // };
+  const getEditParams = (field: FieldSchema) => {
+    if (field.options && field.options.length > 0) {
+      return {
+        params: {
+          dataSource: field.options,
+          fields: { text: 'label', value: 'value' }
+        }
+      };
+    }
+    return undefined;
+  };
 
-  const getEditParams = (field: FieldSchema) => ({
-    dataSource: field.options ?? [],
-    fields: {
-      text: "label",
-      value: "value",
-    },
-  });
+  // Right-Click Context Menu with Full Nested Chart Options
+  const contextMenuItems = [
+    { text: 'Edit Record', target: '.e-content', id: 'edit_record' },
+    { text: 'Copy Record', target: '.e-content', id: 'copy_record' },
+    { text: 'Delete Record', target: '.e-content', id: 'delete_record' },
+    { text: 'Create Status History', target: '.e-content', id: 'create_status' },
+    {
+      text: 'Chart',
+      target: '.e-content',
+      id: 'chart_menu',
+      items: [
+        {
+          text: 'Line Chart',
+          id: 'chart_Line_grp',
+          items: [
+            { text: 'Line', id: 'chart_Line' },
+            { text: 'Stacked Line', id: 'chart_StackingLine' },
+            { text: '100% Stacked Line', id: 'chart_StackingLine100' }
+          ]
+        },
+        {
+          text: 'Area Chart',
+          id: 'chart_Area_grp',
+          items: [
+            { text: 'Area', id: 'chart_Area' },
+            { text: 'Stacked Area', id: 'chart_StackingArea' },
+            { text: '100% Stacked Area', id: 'chart_StackingArea100' }
+          ]
+        },
+        {
+          text: 'Column Chart',
+          id: 'chart_Column_grp',
+          items: [
+            { text: 'Column', id: 'chart_Column' },
+            { text: 'Stacked Column', id: 'chart_StackingColumn' },
+            { text: '100% Stacked Column', id: 'chart_StackingColumn100' }
+          ]
+        },
+        {
+          text: 'Bar Chart',
+          id: 'chart_Bar_grp',
+          items: [
+            { text: 'Bar', id: 'chart_Bar' },
+            { text: 'Stacked Bar', id: 'chart_StackingBar' },
+            { text: '100% Stacked Bar', id: 'chart_StackingBar100' }
+          ]
+        },
+        { text: 'Pie Chart', id: 'chart_Pie' }
+      ]
+    }
+  ];
 
-  const aggregateFields = visibleFields.filter(f => f.aggregate);
+  const handleContextMenuClick = (args: any) => {
+    if (args.item.id && args.item.id.startsWith('chart_') && !args.item.id.endsWith('_grp')) {
+      const selectedType = args.item.id.replace('chart_', '');
+      const selectedRecords = gridRef.current ? gridRef.current.getSelectedRecords() : [];
+      const recordsToChart = selectedRecords.length > 0 ? selectedRecords : data;
 
-  const getSeriesType = (type: string) => {
-    switch (type) {
-      case 'Line':
-      case 'StackedLine':
-      case '100%StackedLine':
-        return 'Line';
-      case 'Area':
-      case 'StackedArea':
-        return 'Area';
-      case 'Bar':
-      case 'StackedBar':
-        return 'Bar';
-      case 'Scatter':
-        return 'Scatter';
-      default:
-        return 'Column';
+      const defaultX = categoryFields[0] || visibleFields[0];
+      const defaultY = numericFields[0] || visibleFields[1] || visibleFields[0];
+
+      setChartXField(defaultX?.key || visibleFields[0]?.key || 'name');
+      setChartYField(defaultY?.key || visibleFields[1]?.key || 'id');
+      setChartType(selectedType);
+      setChartData(recordsToChart);
+      setActiveInlineView('chart');
+    } else if (args.item.id === 'edit_record' && onEditRecord) {
+      onEditRecord(args.rowData);
+    } else if (args.item.id === 'copy_record' && onCopyRecord) {
+      onCopyRecord(args.rowData);
+    } else if (args.item.id === 'delete_record' && onDeleteRecord) {
+      onDeleteRecord(args.rowData.id || args.rowData.code);
+    } else if (args.item.id === 'create_status' && onOpenStatusHistory) {
+      onOpenStatusHistory(args.rowData);
     }
   };
 
+  const aggregateFields = visibleFields.filter(f => f.aggregate);
+  const activeChartData = chartData.length > 0 ? chartData : data;
+
   return (
-    <div className="w-full bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-1 sm:p-1.5 shadow-xs flex flex-col h-[calc(100vh-160px)] sm:h-[calc(100vh-170px)] min-h-[420px] sm:min-h-[580px] overflow-hidden">
-      {/* Syncfusion DataGrid Component */}
-      <div className="overflow-x-auto overflow-y-hidden rounded-lg flex-1 h-full w-full">
-        <GridComponent
-          ref={gridRef}
-          dataSource={data}
-          selectionSettings={{ type: 'Multiple', mode: 'Row', checkboxOnly: false, persistSelection: true }}
-          rowSelected={handleRowSelection}
-          rowDeselected={handleRowSelection}
-          allowPaging={config.allowPaging !== false}
-          pageSettings={{ pageSize: config.pageSize || 25, pageSizes: [10, 25, 50, 100] }}
-          allowSorting={config.allowSorting !== false}
-          allowFiltering={config.allowFiltering !== false}
-          filterSettings={{ type: 'Excel' }}
-          editSettings={{
-            allowEditing: canEdit,
-            allowAdding: canCreate,
-            allowDeleting: canDelete,
-            mode: config.editMode || 'Normal',
-            newRowPosition: 'Bottom'
-          }}
-          allowGrouping={config.allowGrouping !== false}
-          allowReordering={true}
-          allowResizing={true}
-          showColumnChooser={config.allowColumnChooser !== false}
-          allowExcelExport={config.allowExcelExport !== false}
-          allowPdfExport={config.allowPdfExport !== false}
-          enableVirtualization={config.virtualScrolling !== false}
-          frozenColumns={config.frozenColumns || 0}
-          toolbar={toolbarItems}
-          toolbarClick={handleToolbarClick}
-          contextMenuItems={contextMenuItems}
-          contextMenuClick={handleContextMenuClick}
-          height="100%"
-        >
-          <ColumnsDirective>
-            <ColumnDirective type="checkbox" width="50" textAlign="Center" />
-            {visibleFields.map(field => {
-              const editParams = getEditParams(field);
-              return (
-                <ColumnDirective
-                  key={field.key}
-                  field={field.key}
-                  headerText={field.label}
-                  width={field.width || (field.key === 'id' ? 90 : 160)}
-                  isPrimaryKey={field.key === 'id'}
-                  allowSorting={field.allowSorting !== false}
-                  allowFiltering={field.allowFiltering !== false}
-                  editType={getEditType(field.controlType)}
-                  {...(editParams ? { edit: editParams } : {})}
-                  format={field.controlType === 'currency' ? 'C2' : field.format}
-                />
-              );
-            })}
-          </ColumnsDirective>
+    <div className="w-full flex flex-col h-[calc(100vh-160px)] sm:h-[calc(100vh-170px)] min-h-[420px] sm:min-h-[580px] overflow-hidden">
+      {/* 1. Grid View Render */}
+      {activeInlineView === 'grid' && (
+        <div className="overflow-x-auto overflow-y-hidden flex-1 h-full w-full">
+          <GridComponent
+            ref={gridRef}
+            dataSource={data}
+            toolbar={toolbarItems}
+            toolbarClick={handleToolbarClick}
+            selectionSettings={{ type: 'Multiple', mode: 'Row', checkboxOnly: false, persistSelection: true }}
+            recordDoubleClick={(args: any) => {
+              if (onEditRecord && args.rowData) {
+                onEditRecord(args.rowData);
+              }
+            }}
+            actionBegin={(args: any) => {
+              if (args.requestType === 'add' && onAddRecord) {
+                args.cancel = true;
+                onAddRecord();
+              } else if (args.requestType === 'beginEdit' && onEditRecord && args.rowData) {
+                args.cancel = true;
+                onEditRecord(args.rowData);
+              }
+            }}
+            allowPaging={config.allowPaging !== false}
+            pageSettings={{ pageSize: config.pageSize || 25, pageSizes: [10, 25, 50, 100] }}
+            allowSorting={config.allowSorting !== false}
+            allowFiltering={config.allowFiltering !== false}
+            filterSettings={{ type: 'Excel' }}
+            editSettings={{
+              allowEditing: canEdit,
+              allowAdding: canCreate,
+              allowDeleting: canDelete,
+              mode: config.editMode || 'Normal',
+              newRowPosition: 'Bottom'
+            }}
+            allowGrouping={config.allowGrouping !== false}
+            groupSettings={{ showDropArea: true }}
+            allowReordering={true}
+            allowResizing={true}
+            showColumnChooser={config.allowColumnChooser !== false}
+            allowExcelExport={config.allowExcelExport !== false}
+            allowPdfExport={config.allowPdfExport !== false}
+            enableVirtualization={config.virtualScrolling !== false}
+            frozenColumns={config.frozenColumns || 0}
+            contextMenuItems={contextMenuItems}
+            contextMenuClick={handleContextMenuClick}
+            height="100%"
+          >
+            <ColumnsDirective>
+              <ColumnDirective type="checkbox" width="50" textAlign="Center" />
+              {visibleFields.map(field => {
+                const editParams = getEditParams(field);
+                const isStatusCol =
+                  field.key === 'statusBadge' ||
+                  field.key === 'status' ||
+                  field.key === 'currentStatus' ||
+                  field.key === 'statusHistory' ||
+                  field.label.toLowerCase().includes('status');
 
-          {aggregateFields.length > 0 && (
-            <AggregatesDirective>
-              <AggregateDirective>
-                <AggregateColumnsDirective>
-                  {aggregateFields.map(agg => (
-                    <AggregateColumnDirective
-                      key={agg.key}
-                      field={agg.key}
-                      type={agg.aggregate!}
-                      format={agg.controlType === 'currency' ? 'C2' : 'N2'}
-                      footerTemplate={(props: any) => (
-                        <div className="font-semibold text-blue-600 dark:text-blue-400">
-                          {agg.aggregate?.toUpperCase()}: {props[agg.aggregate!]}
+                return (
+                  <ColumnDirective
+                    key={field.key}
+                    field={field.key}
+                    headerText={field.label}
+                    width={field.width || (field.key === 'id' || field.key === 'code' ? 110 : 160)}
+                    isPrimaryKey={field.key === 'id' || field.key === 'code'}
+                    allowSorting={field.allowSorting !== false}
+                    allowFiltering={field.allowFiltering !== false}
+                    editType={getEditType(field.controlType)}
+                    {...(editParams ? { edit: editParams } : {})}
+                    format={field.controlType === 'currency' ? 'C2' : field.format}
+                    template={isStatusCol ? (props: any) => {
+                      const badgeText = props.statusBadge || props.currentStatus || props.statusHistory || props.status || '';
+                      if (!badgeText) return null;
+
+                      return (
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (onOpenStatusHistory) {
+                                onOpenStatusHistory(props);
+                              }
+                            }}
+                            title="Click to view & update Status History"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-[11px] font-semibold bg-[#007a4d] hover:bg-[#00623e] text-white cursor-pointer transition-all hover:scale-102 active:scale-98 shadow-xs"
+                          >
+                            <span className="font-bold text-xs">+</span>
+                            <span>{badgeText}</span>
+                          </button>
                         </div>
-                      )}
-                    />
-                  ))}
-                </AggregateColumnsDirective>
-              </AggregateDirective>
-            </AggregatesDirective>
-          )}
+                      );
+                    } : undefined}
+                  />
+                );
+              })}
+            </ColumnsDirective>
 
-          <Inject
-            services={[
-              Page,
-              Selection,
-              Sort,
-              Filter,
-              Group,
-              Reorder,
-              Toolbar,
-              ExcelExport,
-              PdfExport,
-              ColumnChooser,
-              Edit,
-              Aggregate,
-              VirtualScroll,
-              ContextMenu,
-              Resize,
-              Freeze
-            ]}
-          />
-        </GridComponent>
-      </div>
+            {aggregateFields.length > 0 && (
+              <AggregatesDirective>
+                <AggregateDirective>
+                  <AggregateColumnsDirective>
+                    {aggregateFields.map(agg => (
+                      <AggregateColumnDirective
+                        key={agg.key}
+                        field={agg.key}
+                        type={agg.aggregate!}
+                        format={agg.controlType === 'currency' ? 'C2' : 'N2'}
+                        footerTemplate={(props: any) => (
+                          <div className="font-semibold text-[#007a4d] dark:text-emerald-400">
+                            {agg.aggregate?.toUpperCase()}: {props[agg.aggregate!]}
+                          </div>
+                        )}
+                      />
+                    ))}
+                  </AggregateColumnsDirective>
+                </AggregateDirective>
+              </AggregatesDirective>
+            )}
 
-      {/* Integrated Syncfusion Chart Modal Overlay */}
-      {isChartModalOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/50">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 rounded-xl">
-                  <BarChart2 className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-                    Integrated Grid Chart ({chartType})
-                  </h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Visualizing {chartData.length} records selected from DataGrid
-                  </p>
-                </div>
-              </div>
+            <Inject
+              services={[
+                Page,
+                Selection,
+                Sort,
+                Filter,
+                Group,
+                Reorder,
+                Toolbar,
+                ExcelExport,
+                PdfExport,
+                ColumnChooser,
+                Edit,
+                Aggregate,
+                VirtualScroll,
+                ContextMenu,
+                Resize,
+                Freeze
+              ]}
+            />
+          </GridComponent>
+        </div>
+      )}
+
+      {/* 2. Inline Chart View Render */}
+      {activeInlineView === 'chart' && (
+        <div className="flex flex-col h-full w-full bg-white dark:bg-zinc-900 p-4 space-y-4 overflow-y-auto">
+          {/* Top Control Header */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/60 rounded-xl border border-zinc-200 dark:border-zinc-800 shrink-0">
+            <div className="flex items-center gap-2">
               <button
-                onClick={() => setIsChartModalOpen(false)}
-                className="p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                type="button"
+                onClick={() => setActiveInlineView('grid')}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <LayoutGrid className="w-3.5 h-3.5" /> Grid View
               </button>
-            </div>
+              <button
+                type="button"
+                onClick={() => setActiveInlineView('chart')}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#007a4d] rounded-lg shadow-xs cursor-pointer"
+              >
+                <BarChart2 className="w-3.5 h-3.5" /> Chart View
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveInlineView('gantt')}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+              >
+                <Calendar className="w-3.5 h-3.5" /> Gantt View
+              </button>
 
-            {/* Modal Controls Bar */}
-            <div className="px-6 py-3 bg-zinc-100/60 dark:bg-zinc-800/30 border-b border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                {/* Chart Type Selector */}
-                <div className="flex items-center gap-1.5">
-                  <label className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Type:</label>
-                  <select
-                    value={chartType}
-                    onChange={(e) => setChartType(e.target.value)}
-                    className="text-xs font-medium bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1 outline-none cursor-pointer"
-                  >
-                    <option value="Column">Column Chart</option>
-                    <option value="Line">Line Chart</option>
-                    <option value="StackedLine">Stacked Line</option>
-                    <option value="100%StackedLine">100% Stacked Line</option>
-                    <option value="Area">Area Chart</option>
-                    <option value="Bar">Bar Chart</option>
-                    <option value="Scatter">Scatter Chart</option>
-                    <option value="Pie">Pie Chart</option>
-                    <option value="Doughnut">Doughnut Chart</option>
-                  </select>
-                </div>
-
-                {/* X-Axis Selector */}
-                <div className="flex items-center gap-1.5">
-                  <label className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">X-Axis:</label>
-                  <select
-                    value={chartXField}
-                    onChange={(e) => setChartXField(e.target.value)}
-                    className="text-xs font-medium bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1 outline-none cursor-pointer"
-                  >
-                    {visibleFields.map(f => (
-                      <option key={f.key} value={f.key}>{f.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Y-Axis Selector */}
-                <div className="flex items-center gap-1.5">
-                  <label className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Y-Axis:</label>
-                  <select
-                    value={chartYField}
-                    onChange={(e) => setChartYField(e.target.value)}
-                    className="text-xs font-medium bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1 outline-none cursor-pointer"
-                  >
-                    {visibleFields.map(f => (
-                      <option key={f.key} value={f.key}>{f.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <span className="text-xs px-2.5 py-1 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 rounded-full font-medium">
-                Live Dynamic Syncfusion Chart
+              {/* Data Selection Badge - Solid Key360 Green Theme */}
+              <span className="text-[11px] font-bold bg-[#007a4d] text-white px-2.5 py-1 rounded-md shadow-2xs">
+                Visualizing {activeChartData.length} records {chartData.length > 0 ? 'selected from DataGrid' : 'from DataGrid'}
               </span>
             </div>
 
-            {/* Syncfusion Chart View Area */}
-            <div className="p-6">
-              {chartType === 'Pie' || chartType === 'Doughnut' ? (
-                <AccumulationChartComponent
-                  id="grid-modal-pie-chart"
-                  tooltip={{ enable: true }}
-                  legendSettings={{ visible: true, position: 'Bottom' }}
-                  height="360px"
+            {/* Chart Parameters Dropdowns */}
+            <div className="flex items-center gap-3 flex-wrap text-xs">
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-zinc-600 dark:text-zinc-400">Chart Type:</span>
+                <select
+                  value={chartType}
+                  onChange={(e) => setChartType(e.target.value)}
+                  className="px-2.5 py-1 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-md font-semibold text-zinc-800 dark:text-zinc-200 outline-none focus:border-[#007a4d]"
                 >
-                  <ChartInject services={[AccumulationLegend, PieSeries, AccumulationTooltip]} />
-                  <AccumulationSeriesCollectionDirective>
-                    <AccumulationSeriesDirective
-                      dataSource={chartData}
-                      xName={chartXField}
-                      yName={chartYField}
-                      innerRadius={chartType === 'Doughnut' ? '40%' : '0%'}
-                      dataLabel={{ visible: true, position: 'Outside' }}
-                    />
-                  </AccumulationSeriesCollectionDirective>
-                </AccumulationChartComponent>
-              ) : (
-                <ChartComponent
-                  id="grid-modal-chart"
-                  primaryXAxis={{ valueType: 'Category', title: fields.find(f => f.key === chartXField)?.label || chartXField }}
-                  primaryYAxis={{ title: fields.find(f => f.key === chartYField)?.label || chartYField }}
-                  tooltip={{ enable: true }}
-                  legendSettings={{ visible: true }}
-                  height="360px"
+                  <option value="Column">Column Chart</option>
+                  <option value="StackingColumn">Stacked Column Chart</option>
+                  <option value="StackingColumn100">100% Stacked Column Chart</option>
+                  <option value="Bar">Bar Chart</option>
+                  <option value="StackingBar">Stacked Bar Chart</option>
+                  <option value="StackingBar100">100% Stacked Bar Chart</option>
+                  <option value="Line">Line Chart</option>
+                  <option value="StackingLine">Stacked Line Chart</option>
+                  <option value="StackingLine100">100% Stacked Line Chart</option>
+                  <option value="Area">Area Chart</option>
+                  <option value="StackingArea">Stacked Area Chart</option>
+                  <option value="StackingArea100">100% Stacked Area Chart</option>
+                  <option value="Pie">Pie Chart</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-zinc-600 dark:text-zinc-400">X-Axis:</span>
+                <select
+                  value={chartXField}
+                  onChange={(e) => setChartXField(e.target.value)}
+                  className="px-2.5 py-1 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-md text-zinc-800 dark:text-zinc-200 outline-none focus:border-[#007a4d]"
                 >
-                  <ChartInject services={[ColumnSeries, LineSeries, AreaSeries, BarSeries, ScatterSeries, Category, ChartTooltip, ChartLegend]} />
-                  <SeriesCollectionDirective>
-                    <SeriesDirective
-                      dataSource={chartData}
-                      xName={chartXField}
-                      yName={chartYField}
-                      type={getSeriesType(chartType)}
-                      name={fields.find(f => f.key === chartYField)?.label || chartYField}
-                      marker={{ visible: true }}
-                    />
-                  </SeriesCollectionDirective>
-                </ChartComponent>
-              )}
+                  {visibleFields.map(f => (
+                    <option key={f.key} value={f.key}>{f.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-zinc-600 dark:text-zinc-400">Y-Axis:</span>
+                <select
+                  value={chartYField}
+                  onChange={(e) => setChartYField(e.target.value)}
+                  className="px-2.5 py-1 text-xs bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-md text-zinc-800 dark:text-zinc-200 outline-none focus:border-[#007a4d]"
+                >
+                  {visibleFields.map(f => (
+                    <option key={f.key} value={f.key}>{f.label}</option>
+                  ))}
+                </select>
+              </div>
             </div>
+          </div>
+
+          {/* Syncfusion Chart Surface */}
+          <div className="flex-1 w-full min-h-[380px] bg-white dark:bg-zinc-900 rounded-xl p-2 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center">
+            {chartType === 'Pie' ? (
+              <AccumulationChartComponent
+                id="inline-pie-chart"
+                legendSettings={{ visible: true, position: 'Right' }}
+                tooltip={{ enable: true }}
+                height="100%"
+                width="100%"
+              >
+                <ChartInject services={[AccumulationLegend, PieSeries, AccumulationTooltip]} />
+                <AccumulationSeriesCollectionDirective>
+                  <AccumulationSeriesDirective
+                    dataSource={activeChartData}
+                    xName={chartXField}
+                    yName={chartYField}
+                    radius="80%"
+                    innerRadius="40%"
+                    dataLabel={{ visible: true, name: chartXField, position: 'Outside' }}
+                  />
+                </AccumulationSeriesCollectionDirective>
+              </AccumulationChartComponent>
+            ) : (
+              <ChartComponent
+                id="inline-bar-chart"
+                primaryXAxis={{ valueType: 'Category', title: visibleFields.find(f => f.key === chartXField)?.label || 'Category' }}
+                primaryYAxis={{ title: visibleFields.find(f => f.key === chartYField)?.label || 'Value' }}
+                tooltip={{ enable: true }}
+                legendSettings={{ visible: true }}
+                height="100%"
+                width="100%"
+              >
+                <ChartInject services={[
+                  ColumnSeries, BarSeries, LineSeries, AreaSeries,
+                  StackingColumnSeries, StackingBarSeries, StackingLineSeries, StackingAreaSeries, ScatterSeries,
+                  Category, ChartTooltip, ChartLegend
+                ]} />
+                <SeriesCollectionDirective>
+                  <SeriesDirective
+                    dataSource={activeChartData}
+                    xName={chartXField}
+                    yName={chartYField}
+                    type={chartType as any}
+                    fill="#007a4d"
+                    name={visibleFields.find(f => f.key === chartYField)?.label || 'Metric'}
+                  />
+                </SeriesCollectionDirective>
+              </ChartComponent>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 3. Inline Gantt View Render */}
+      {activeInlineView === 'gantt' && (
+        <div className="flex flex-col h-full w-full bg-white dark:bg-zinc-900 p-4 space-y-4 overflow-y-auto">
+          {/* Top Control Header */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/60 rounded-xl border border-zinc-200 dark:border-zinc-800 shrink-0">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveInlineView('grid')}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" /> Grid View
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveInlineView('chart')}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+              >
+                <BarChart2 className="w-3.5 h-3.5" /> Chart View
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveInlineView('gantt')}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-[#007a4d] rounded-lg shadow-xs cursor-pointer"
+              >
+                <Calendar className="w-3.5 h-3.5" /> Gantt View
+              </button>
+            </div>
+          </div>
+
+          {/* Interactive Gantt or Empty-State Notice */}
+          <div className="flex-1 w-full flex items-center justify-center">
+            {hasGanttFields ? (
+              <div className="w-full h-full min-h-[400px]">
+                <DynamicGantt data={ganttData} config={config.ganttWidget} />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-2xl space-y-3 max-w-md my-auto shadow-2xs">
+                <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 flex items-center justify-center shadow-xs">
+                  <CalendarOff className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+                  Can't present the Gantt view on this data
+                </h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                  This module dataset does not contain start and end date tracking fields required to render an interactive Gantt schedule timeline.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setActiveInlineView('grid')}
+                  className="px-4 py-2 text-xs font-bold text-white bg-[#007a4d] hover:bg-[#00623e] rounded-xl shadow-xs transition-colors cursor-pointer mt-1"
+                >
+                  Switch back to Grid View
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

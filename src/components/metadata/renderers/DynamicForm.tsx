@@ -1,37 +1,90 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FieldSchema, PermissionType } from '@/types/metadata';
+import { FieldSchema, FormSectionSchema, PermissionType } from '@/types/metadata';
 import { TextBoxComponent, NumericTextBoxComponent, UploaderComponent, MaskedTextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { DatePickerComponent, DateTimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { DropDownListComponent, MultiSelectComponent, AutoCompleteComponent } from '@syncfusion/ej2-react-dropdowns';
 import { CheckBoxComponent, SwitchComponent, RadioButtonComponent } from '@syncfusion/ej2-react-buttons';
-import { Send, CheckCircle2, Sparkles, X, RefreshCw, ShieldAlert, AlertTriangle } from 'lucide-react';
+import { GridComponent, ColumnsDirective, ColumnDirective, Page, Sort, Filter, Group } from '@syncfusion/ej2-react-grids';
+import {
+  Send, CheckCircle2, Sparkles, X, RefreshCw, ShieldAlert, AlertTriangle,
+  ChevronDown, ChevronUp, Save, ArrowLeft, Table, Plus, FileSpreadsheet, Download, Search, Copy
+} from 'lucide-react';
+import { DynamicGrid } from './DynamicGrid';
 
 interface DynamicFormProps {
   fields: FieldSchema[];
+  formSections?: FormSectionSchema[];
   initialValues?: Record<string, any>;
   permissions?: PermissionType[];
-  onSubmit: (formData: Record<string, any>) => void;
+  onSubmit: (formData: Record<string, any>, actionType?: 'save' | 'saveAndNew' | 'saveAndClose') => void;
   onCancel?: () => void;
 }
 
 export const DynamicForm: React.FC<DynamicFormProps> = ({
   fields,
+  formSections,
   initialValues = {},
   permissions = ['create', 'edit'],
   onSubmit,
   onCancel
 }) => {
-  const [formData, setFormData] = useState<Record<string, any>>(initialValues);
+  const safeInitial = initialValues || {};
+  const [formData, setFormData] = useState<Record<string, any>>(() => {
+    const defaults: Record<string, any> = {
+      code: safeInitial.code || `000000${Math.floor(15 + Math.random() * 85)}`,
+      owner: safeInitial.owner || 'Prajapati, Rajvi',
+      originator: safeInitial.originator || 'Prajapati, Rajvi',
+      nextResponsiblePerson: safeInitial.nextResponsiblePerson || 'Prajapati, Rajvi',
+      recordingType: safeInitial.recordingType || 'Action',
+      recordingProjectId: safeInitial.recordingProjectId || '001',
+      recordingProjectName: safeInitial.recordingProjectName || 'Key360 Management Platform',
+      company: safeInitial.company || 'Key360 Management Platform',
+      status: safeInitial.status || 'Issued',
+      statusHistoryList: safeInitial.statusHistoryList || [],
+      attachmentsList: safeInitial.attachmentsList || [],
+      ...safeInitial
+    };
+    return defaults;
+  });
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [topNotification, setTopNotification] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
 
+  // Nested Grid search terms
+  const [statusSearch, setStatusSearch] = useState('');
+  const [attachmentSearch, setAttachmentSearch] = useState('');
+
+  // Accordion open/close state tracking per section
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    if (formSections) {
+      formSections.forEach(sec => {
+        initial[sec.id] = sec.defaultExpanded !== undefined ? sec.defaultExpanded : true;
+      });
+    }
+    return initial;
+  });
+
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections(prev => ({ ...prev, [sectionId]: !prev[sectionId] }));
+  };
+
   const formFields = fields.filter(f => f.showInForm !== false && f.key !== 'id');
 
   const handleChange = (key: string, value: any) => {
-    setFormData(prev => ({ ...prev, [key]: value }));
+    let updated = { ...formData, [key]: value };
+
+    // Dependent auto-fill rules
+    if (key === 'recordingProjectId') {
+      if (value === '001') updated.recordingProjectName = 'Key360 Management Platform';
+      else if (value === '002') updated.recordingProjectName = 'CMMS Infrastructure Suite';
+      else if (value === '003') updated.recordingProjectName = 'SHE & Quality Audit System';
+    }
+
+    setFormData(updated);
     if (errors[key]) {
       setErrors(prev => {
         const next = { ...prev };
@@ -48,45 +101,10 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       const value = dataToValidate[field.key];
       const isRequired = field.validation?.required || field.key === 'name' || field.key === 'title';
 
-      // 1. Required field check
       if (isRequired) {
         if (value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0)) {
-          newErrors[field.key] = field.validation?.message || `${field.label} is required and cannot be empty.`;
+          newErrors[field.key] = field.validation?.message || `${field.label} is required.`;
           return;
-        }
-      }
-
-      // If value is provided, validate pattern & bounds
-      if (value !== undefined && value !== null && value !== '') {
-        // Email validation
-        if (field.controlType === 'email' || field.key.toLowerCase().includes('email')) {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(String(value))) {
-            newErrors[field.key] = 'Please enter a valid email address (e.g. name@enterprise.com).';
-          }
-        }
-
-        // Phone / Masked input validation
-        if (field.controlType === 'phone' || field.controlType === 'maskedinput') {
-          const cleanPhone = String(value).replace(/\D/g, '');
-          if (cleanPhone.length > 0 && cleanPhone.length < 7) {
-            newErrors[field.key] = 'Please enter a valid phone number (min 7 digits).';
-          }
-        }
-
-        // Min length check
-        if (field.validation?.minLength && String(value).length < field.validation.minLength) {
-          newErrors[field.key] = `${field.label} must be at least ${field.validation.minLength} characters.`;
-        }
-
-        // Numeric range check
-        if ((field.controlType === 'number' || field.controlType === 'currency') && typeof value === 'number') {
-          if (field.validation?.min !== undefined && value < field.validation.min) {
-            newErrors[field.key] = `${field.label} cannot be less than $${field.validation.min}.`;
-          }
-          if (field.validation?.max !== undefined && value > field.validation.max) {
-            newErrors[field.key] = `${field.label} cannot exceed $${field.validation.max}.`;
-          }
         }
       }
     });
@@ -94,109 +112,81 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleActionSubmit = (actionType: 'save' | 'saveAndNew' | 'saveAndClose') => {
     setSubmitAttempted(true);
-
     const validationErrors = validateForm(formData);
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setTopNotification({
         type: 'error',
-        message: `Validation Failed: ${Object.keys(validationErrors).length} required field(s) must be completed before saving.`
+        message: 'Validation Warning: Please fill in all required fields.'
       });
-      return; // STRICT PREVENTION: Form will not submit if validation fails
+      return;
     }
 
-    // Clean submission
-    setErrors({});
-    onSubmit(formData);
-    setTopNotification({
-      type: 'success',
-      message: '✓ Record Saved Successfully! All metadata validation rules passed and project details were saved.'
-    });
+    onSubmit(formData, actionType);
 
-    setTimeout(() => {
-      setTopNotification(null);
-    }, 4500);
+    if (actionType === 'save') {
+      setTopNotification({
+        type: 'success',
+        message: 'Recording saved successfully.'
+      });
+    } else if (actionType === 'saveAndNew') {
+      setFormData({
+        code: `000000${Math.floor(16 + Math.random() * 80)}`,
+        owner: 'Prajapati, Rajvi',
+        originator: 'Prajapati, Rajvi',
+        nextResponsiblePerson: 'Prajapati, Rajvi',
+        recordingType: 'Action',
+        recordingProjectId: '001',
+        recordingProjectName: 'Key360 Management Platform',
+        company: 'Key360 Management Platform',
+        status: 'Issued',
+        statusHistoryList: [],
+        attachmentsList: []
+      });
+      setTopNotification({
+        type: 'info',
+        message: 'Saved! Cleared form to create a new recording.'
+      });
+    }
   };
 
-  // Demo Helper: Auto-fill form with sample enterprise data
-  const handleAutoFillDemo = () => {
-    const sampleData: Record<string, any> = {};
+  const handleAddStatusEntry = () => {
+    const newEntry = {
+      id: `sh-${Date.now()}`,
+      status: formData.status || 'Issued',
+      nextResponsiblePerson: formData.nextResponsiblePerson || 'Prajapati, Rajvi',
+      comment: 'Status updated from Recording detail panel',
+      sendMail: true,
+      sendAttachments: false,
+      sendPrevAttachments: false,
+      location: 'India Development',
+      statusUser: 'Prajapati, Rajvi',
+      statusDate: new Date().toISOString().split('T')[0]
+    };
 
-    formFields.forEach(field => {
-      const options = getFormOptionsForField(field);
-      const firstOptVal = options.length > 0 ? options[0].value : undefined;
-
-      switch (field.controlType) {
-        case 'text':
-          if (field.key.toLowerCase().includes('name') || field.key === 'title') {
-            sampleData[field.key] = 'Enterprise Microservices Modernization';
-          } else {
-            sampleData[field.key] = 'Operational Core';
-          }
-          break;
-        case 'textarea':
-          sampleData[field.key] = 'Detailed project scope including timesheet audit logging, employee billable rates, and milestone deliverables.';
-          break;
-        case 'email':
-          sampleData[field.key] = 'rajvi.prajapati@key360.com';
-          break;
-        case 'phone':
-        case 'maskedinput':
-          sampleData[field.key] = '555-456-7890';
-          break;
-        case 'number':
-        case 'currency':
-          if (field.key === 'hourlyRate') sampleData[field.key] = 150;
-          else if (field.key === 'budget') sampleData[field.key] = 180000;
-          else if (field.key === 'estimatedHours') sampleData[field.key] = 1200;
-          else if (field.key === 'loggedHours') sampleData[field.key] = 850;
-          else sampleData[field.key] = 90;
-          break;
-        case 'select':
-        case 'radio':
-          sampleData[field.key] = firstOptVal || 'In Progress';
-          break;
-        case 'multiselect':
-        case 'autocomplete':
-          sampleData[field.key] = 'Rajvi Prajapati (Lead Architecture)';
-          break;
-        case 'date':
-        case 'datetime':
-          sampleData[field.key] = new Date().toISOString().split('T')[0];
-          break;
-        case 'switch':
-        case 'checkbox':
-          sampleData[field.key] = true;
-          break;
-        case 'rating':
-          sampleData[field.key] = 80;
-          break;
-        case 'tags':
-          sampleData[field.key] = ['Next.js', 'Syncfusion', 'TypeScript', 'TailwindCSS'];
-          break;
-        default:
-          sampleData[field.key] = 'Demo Value';
-      }
-    });
-
-    setFormData(sampleData);
-    setErrors({});
-    setSubmitAttempted(false);
-    setTopNotification({
-      type: 'info',
-      message: '✨ Demo data loaded across all project & timesheet fields. Click Save Record to submit.'
-    });
+    setFormData(prev => ({
+      ...prev,
+      statusHistoryList: [newEntry, ...(prev.statusHistoryList || [])]
+    }));
   };
 
-  const handleClearForm = () => {
-    setFormData({});
-    setErrors({});
-    setSubmitAttempted(false);
-    setTopNotification(null);
+  const handleAddAttachmentEntry = () => {
+    const newAtt = {
+      id: `att-${Date.now()}`,
+      fileDescription: 'Supporting Documentation & Audit Logs',
+      fileName: `recording_doc_${Date.now().toString().slice(-4)}.pdf`,
+      attachment: 'Download',
+      dateCreated: new Date().toISOString().split('T')[0],
+      createdBy: 'Prajapati, Rajvi'
+    };
+
+    setFormData(prev => ({
+      ...prev,
+      attachmentsList: [newAtt, ...(prev.attachmentsList || [])]
+    }));
   };
 
   const getFormOptionsForField = (field: FieldSchema) => {
@@ -214,8 +204,8 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       });
     }
 
-    if (initialValues && field.key && initialValues[field.key]) {
-      const strVal = String(initialValues[field.key]);
+    if (formData && field.key && formData[field.key]) {
+      const strVal = String(formData[field.key]);
       if (strVal && !seen.has(strVal)) {
         seen.add(strVal);
         list.push({ label: strVal, value: strVal });
@@ -226,336 +216,304 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 shadow-md transition-all">
-      {/* Top Header & Demo Tools */}
-      <div className="flex flex-wrap items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800 mb-6 gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">Metadata Dynamic Form</h3>
-            {/* <span className="text-[10px] font-semibold px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 rounded-full border border-blue-200 dark:border-blue-800">
-              Dynamic Validation Active
-            </span> */}
-          </div>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            Auto-generated form controls with schema validation, employee & timesheet links
-          </p>
-        </div>
-
-        {/* Demo Fast Fill & Clear Buttons */}
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={handleAutoFillDemo}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900/80 rounded-lg border border-purple-200 dark:border-purple-800/80 transition-colors cursor-pointer"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Auto-Fill Demo Data
-          </button>
-          <button
-            type="button"
-            onClick={handleClearForm}
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer"
-          >
-            <RefreshCw className="w-3.5 h-3.5" /> Clear
-          </button>
-        </div>
-      </div>
-
-      {/* Top Notification Banner (Error Failure vs Success) */}
-      {topNotification && (
-        <div
-          className={`mb-6 p-4 rounded-xl border flex items-center justify-between gap-3 text-xs font-medium animate-in fade-in zoom-in-95 duration-200 ${topNotification.type === 'error'
-              ? 'bg-red-50 dark:bg-red-950/80 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
-              : topNotification.type === 'success'
-                ? 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
-                : 'bg-blue-50 dark:bg-blue-950/80 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200'
-            }`}
-        >
-          <div className="flex items-center gap-2.5">
-            {topNotification.type === 'error' ? (
-              <ShieldAlert className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" />
-            ) : topNotification.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            ) : (
-              <Sparkles className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" />
-            )}
-            <div>
-              <p className="font-bold">{topNotification.message}</p>
-              {topNotification.type === 'error' && (
-                <p className="text-[11px] opacity-90 mt-0.5">
-                  Submission was blocked to ensure data integrity. Please review the highlighted red fields.
-                </p>
-              )}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setTopNotification(null)}
-            className="p-1 hover:bg-black/5 dark:hover:bg-white/10 rounded-md transition-colors cursor-pointer shrink-0"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      )}
-
-      {/* Form Fields Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {formFields.map(field => {
-          const value = formData[field.key] ?? field.defaultValue ?? '';
-          const options = getFormOptionsForField(field);
-          const isRequired = field.validation?.required || field.key === 'name' || field.key === 'title';
-          const fieldError = errors[field.key];
-          const hasError = Boolean(fieldError);
-
-          return (
-            <div
-              key={field.key}
-              className={`p-3 rounded-xl transition-all ${field.controlType === 'textarea' || field.controlType === 'fileupload' ? 'md:col-span-2' : ''
-                } ${hasError ? 'bg-red-50/40 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50' : ''}`}
-            >
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200">
-                  {field.label} {isRequired && <span className="text-red-500 font-bold ml-0.5">*</span>}
-                </label>
-                {field.validation?.minLength && (
-                  <span className="text-[10px] text-zinc-400">Min {field.validation.minLength} chars</span>
-                )}
-              </div>
-
-              {/* Control Renderer Mapping */}
-              {field.controlType === 'text' && (
-                <TextBoxComponent
-                  placeholder={field.placeholder || `Enter ${field.label}...`}
-                  value={value}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'textarea' && (
-                <div>
-                  <TextBoxComponent
-                    multiline={true}
-                    placeholder={field.placeholder || `Enter detailed ${field.label}...`}
-                    value={value}
-                    cssClass={hasError ? 'e-error' : ''}
-                    change={(e: any) => handleChange(field.key, e.value)}
-                  />
-                  <div className="flex justify-end mt-1 text-[10px] text-zinc-400">
-                    {String(value).length} characters
-                  </div>
-                </div>
-              )}
-
-              {(field.controlType === 'number' || field.controlType === 'currency') && (
-                <NumericTextBoxComponent
-                  format={field.controlType === 'currency' ? 'c2' : 'n0'}
-                  placeholder={field.placeholder || `Enter ${field.label}...`}
-                  value={value !== '' ? Number(value) : undefined}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'maskedinput' && (
-                <MaskedTextBoxComponent
-                  mask="000-000-0000"
-                  placeholder="000-000-0000"
-                  value={value}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'email' && (
-                <TextBoxComponent
-                  placeholder="user@enterprise.com"
-                  value={value}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'phone' && (
-                <TextBoxComponent
-                  placeholder="+1 (555) 000-0000"
-                  value={value}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'select' && (
-                <DropDownListComponent
-                  dataSource={options}
-                  fields={{ text: 'label', value: 'value' }}
-                  placeholder={`Select ${field.label}...`}
-                  allowFiltering={true}
-                  value={value}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'radio' && (
-                <div className="flex flex-wrap gap-4 pt-2">
-                  {options.map((opt) => (
-                    <RadioButtonComponent
-                      key={opt.value}
-                      label={opt.label}
-                      name={field.key}
-                      value={opt.value}
-                      checked={String(value) === String(opt.value)}
-                      change={() => handleChange(field.key, opt.value)}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {field.controlType === 'multiselect' && (
-                <MultiSelectComponent
-                  dataSource={options}
-                  fields={{ text: 'label', value: 'value' }}
-                  placeholder={`Select ${field.label}...`}
-                  mode="Box"
-                  value={Array.isArray(value) ? value : []}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'autocomplete' && (
-                <AutoCompleteComponent
-                  dataSource={options}
-                  fields={{ value: 'label' }}
-                  placeholder={`Type to search ${field.label}...`}
-                  value={value}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'date' && (
-                <DatePickerComponent
-                  format="yyyy-MM-dd"
-                  placeholder="Select Date..."
-                  value={value ? new Date(value) : undefined}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'datetime' && (
-                <DateTimePickerComponent
-                  placeholder="Select Date & Time..."
-                  value={value ? new Date(value) : undefined}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'switch' && (
-                <div className="pt-2 flex items-center">
-                  <SwitchComponent
-                    checked={Boolean(value)}
-                    change={(e: any) => handleChange(field.key, e.checked)}
-                  />
-                  <span className="ml-3 text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                    {value ? 'Active / Allowed' : 'Disabled'}
-                  </span>
-                </div>
-              )}
-
-              {field.controlType === 'checkbox' && (
-                <div className="pt-2">
-                  <CheckBoxComponent
-                    label={field.label}
-                    checked={Boolean(value)}
-                    change={(e: any) => handleChange(field.key, e.checked)}
-                  />
-                </div>
-              )}
-
-              {field.controlType === 'tags' && (
-                <MultiSelectComponent
-                  dataSource={(Array.isArray(value) ? value : ['Next.js', 'Syncfusion', 'TypeScript', 'TailwindCSS', 'Node.js', '.NET Core']).map(v => ({ label: v, value: v }))}
-                  fields={{ text: 'label', value: 'value' }}
-                  placeholder="Add skill tags..."
-                  allowCustomValue={true}
-                  mode="Delimiter"
-                  value={Array.isArray(value) ? value : []}
-                  cssClass={hasError ? 'e-error' : ''}
-                  change={(e: any) => handleChange(field.key, e.value)}
-                />
-              )}
-
-              {field.controlType === 'rating' && (
-                <div className="flex items-center gap-1.5 pt-1">
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => handleChange(field.key, star * 20)}
-                      className={`w-7 h-7 text-sm rounded transition-transform hover:scale-110 cursor-pointer ${(value || 0) >= star * 20
-                          ? 'bg-amber-400 text-zinc-950 font-bold shadow-xs'
-                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'
-                        }`}
-                    >
-                      ★
-                    </button>
-                  ))}
-                  <span className="text-xs text-zinc-500 font-medium ml-2">{value || 0}% rating</span>
-                </div>
-              )}
-
-              {field.controlType === 'fileupload' && (
-                <div className="mt-1">
-                  <UploaderComponent
-                    autoUpload={false}
-                    multiple={false}
-                    asyncSettings={{
-                      saveUrl: 'https://ej2services.syncfusion.com/production/web-services/api/uploader/save',
-                      removeUrl: 'https://ej2services.syncfusion.com/production/web-services/api/uploader/remove'
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Inline Validation Error Message */}
-              {hasError && (
-                <p className="text-[11px] text-red-600 dark:text-red-400 font-semibold mt-1.5 flex items-center gap-1 animate-in fade-in duration-150">
-                  <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-                  {fieldError}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Form Action Controls */}
-      <div className="mt-8 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-        <span className="text-xs text-zinc-400 font-mono">
-          * Indicates required field validation rule
-        </span>
-
+    <div className="w-full bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-3 sm:p-4 shadow-xl transition-all">
+      {/* Key360 Form Top Action Bar (Matching Screenshot 2 & 3) */}
+      <div className="flex flex-wrap items-center justify-between pb-2.5 border-b border-zinc-200 dark:border-zinc-800 mb-4 gap-2">
         <div className="flex items-center gap-3">
+          <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
+            {initialValues?.code ? `Edit Recordings (${initialValues.code})` : 'Create Recordings'}
+          </h3>
+        </div>
+
+        {/* Action Icon Toolbar: Save & New, Save, Save & Close, Cancel */}
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => handleActionSubmit('saveAndNew')}
+            title="Save & New"
+            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-zinc-800 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded border border-zinc-300 dark:border-zinc-700 transition-colors cursor-pointer"
+          >
+            <Save className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <Plus className="w-3 h-3 text-emerald-600 dark:text-emerald-400 -ml-1" />
+            <span className="hidden sm:inline">Save & New</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleActionSubmit('save')}
+            title="Save"
+            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-zinc-800 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded border border-zinc-300 dark:border-zinc-700 transition-colors cursor-pointer"
+          >
+            <Save className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
+            <span className="hidden sm:inline">Save</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleActionSubmit('saveAndClose')}
+            title="Save & Close"
+            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded border border-emerald-700 transition-colors cursor-pointer"
+          >
+            <Save className="w-3.5 h-3.5" />
+            <CheckCircle2 className="w-3 h-3 -ml-0.5" />
+            <span>Save & Close</span>
+          </button>
+
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors cursor-pointer"
+              title="Close"
+              className="p-1 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded transition-colors cursor-pointer ml-1"
             >
-              Cancel
+              <X className="w-4 h-4" />
             </button>
           )}
-          <button
-            type="submit"
-            className="inline-flex items-center gap-2 px-6 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl shadow-md transition-all hover:scale-[1.02] cursor-pointer"
-          >
-            <Send className="w-3.5 h-3.5" /> Save Record
-          </button>
         </div>
       </div>
-    </form>
+
+      {/* Top Notification Banner */}
+      {topNotification && (
+        <div
+          className={`mb-4 p-3 rounded-lg border flex items-center justify-between gap-3 text-xs font-medium ${topNotification.type === 'error'
+              ? 'bg-red-50 dark:bg-red-950/80 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
+              : topNotification.type === 'success'
+                ? 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
+                : 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
+            }`}
+        >
+          <div className="flex items-center gap-2">
+            {topNotification.type === 'error' ? (
+              <ShieldAlert className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
+            ) : (
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            )}
+            <p className="font-semibold">{topNotification.message}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setTopNotification(null)}
+            className="p-0.5 hover:bg-black/5 rounded cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Accordion Sections matching Key360 Sage Green Styling */}
+      {formSections && formSections.length > 0 ? (
+        <div className="space-y-3">
+          {formSections.map(sec => {
+            const isExpanded = expandedSections[sec.id] !== false;
+            const sectionFields = formFields.filter(f => f.section === sec.title || f.section === sec.id);
+
+            return (
+              <div key={sec.id} className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-2xs">
+                {/* Rich Key360 Forest Green Executive Accordion Header Banner */}
+                <button
+                  type="button"
+                  onClick={() => toggleSection(sec.id)}
+                  className="w-full px-3.5 py-2.5 bg-[#007a4d] hover:bg-[#00623e] flex items-center justify-between transition-colors cursor-pointer text-left select-none"
+                >
+                  <span className="text-xs font-bold text-white tracking-wide">
+                    {sec.title}
+                  </span>
+                  {isExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-white" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-white" />
+                  )}
+                </button>
+
+                {/* Section Content */}
+                {isExpanded && (
+                  <div className="p-3 bg-white dark:bg-zinc-900">
+                    {sec.type === 'grid' ? (
+                      /* Generic DynamicGrid for Nested Form Sections (Status History & Attachments) */
+                      <div className="w-full">
+                        <DynamicGrid
+                          fields={
+                            sec.nestedGridFields ||
+                            (sec.id === 'sec-status-history'
+                              ? [
+                                  { key: 'status', label: 'Status', controlType: 'text', width: 120 },
+                                  { key: 'nextResponsiblePerson', label: 'Next Responsible Person', controlType: 'text', width: 170 },
+                                  { key: 'comment', label: 'Comment', controlType: 'text', width: 220 },
+                                  { key: 'sendMail', label: 'Send Mail?', controlType: 'checkbox', width: 100 },
+                                  { key: 'sendAttachments', label: 'Send Attachments?', controlType: 'checkbox', width: 140 },
+                                  { key: 'sendPrevAttachments', label: 'Send Previous Status Attachm', controlType: 'checkbox', width: 200 },
+                                  { key: 'location', label: 'Location', controlType: 'text', width: 140 },
+                                  { key: 'statusUser', label: 'Status User', controlType: 'text', width: 140 },
+                                  { key: 'statusDate', label: 'Status Date', controlType: 'date', width: 120 }
+                                ]
+                              : [
+                                  { key: 'fileDescription', label: 'File Description', controlType: 'text', width: 200 },
+                                  { key: 'fileName', label: 'File Name', controlType: 'text', width: 200 },
+                                  { key: 'attachment', label: 'Attachment', controlType: 'text', width: 130 },
+                                  { key: 'dateCreated', label: 'Date Created', controlType: 'date', width: 130 },
+                                  { key: 'createdBy', label: 'Created By', controlType: 'text', width: 150 }
+                                ])
+                          }
+                          data={
+                            sec.id === 'sec-status-history'
+                              ? formData.statusHistoryList || []
+                              : formData.attachmentsList || []
+                          }
+                          config={{
+                            pageSize: 5,
+                            allowPaging: true,
+                            allowSorting: true,
+                            allowFiltering: true,
+                            allowGrouping: true,
+                            allowColumnChooser: true,
+                            allowExcelExport: true,
+                            allowPdfExport: true
+                          }}
+                          onAddRecord={sec.id === 'sec-status-history' ? handleAddStatusEntry : handleAddAttachmentEntry}
+                        />
+                      </div>
+                    ) : (
+                      /* Responsive Form Fields Layout */
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {sectionFields.map(field => {
+                          const value = formData[field.key] ?? field.defaultValue ?? '';
+                          const options = getFormOptionsForField(field);
+                          const isRequired = field.validation?.required || field.key === 'code';
+                          const fieldError = errors[field.key];
+                          const hasError = Boolean(fieldError);
+
+                          const isFullWidth = field.controlType === 'textarea' || field.key === 'description';
+
+                          return (
+                            <div
+                              key={field.key}
+                              className={`${isFullWidth ? 'md:col-span-2' : ''} ${hasError ? 'bg-red-50/50 p-1.5 rounded border border-red-200' : ''}`}
+                            >
+                              <label className="block text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                                {field.label} {isRequired && <span className="text-red-500 font-bold ml-0.5">*</span>}
+                              </label>
+
+                              {/* Controls */}
+                              {field.controlType === 'text' && (
+                                <TextBoxComponent
+                                  placeholder={field.placeholder || `Enter ${field.label}...`}
+                                  value={value}
+                                  disabled={field.readonly}
+                                  cssClass={hasError ? 'e-error' : ''}
+                                  change={(e: any) => handleChange(field.key, e.value)}
+                                />
+                              )}
+
+                              {field.controlType === 'textarea' && (
+                                <TextBoxComponent
+                                  multiline={true}
+                                  htmlAttributes={{ rows: '3' }}
+                                  placeholder={field.placeholder || `Enter ${field.label}...`}
+                                  value={value}
+                                  disabled={field.readonly}
+                                  cssClass={hasError ? 'e-error' : ''}
+                                  change={(e: any) => handleChange(field.key, e.value)}
+                                />
+                              )}
+
+                              {field.controlType === 'checkbox' && (
+                                <div className="pt-1">
+                                  <CheckBoxComponent
+                                    label={field.label}
+                                    checked={Boolean(value)}
+                                    disabled={field.readonly}
+                                    change={(e: any) => handleChange(field.key, e.checked)}
+                                  />
+                                </div>
+                              )}
+
+                              {field.controlType === 'number' && (
+                                <NumericTextBoxComponent
+                                  format="n2"
+                                  placeholder={field.placeholder || `Enter ${field.label}...`}
+                                  value={value !== undefined && value !== null ? Number(value) : 0}
+                                  disabled={field.readonly}
+                                  cssClass={hasError ? 'e-error' : ''}
+                                  change={(e: any) => handleChange(field.key, e.value)}
+                                />
+                              )}
+
+                              {field.controlType === 'currency' && (
+                                <NumericTextBoxComponent
+                                  format="c2"
+                                  currency="ZAR"
+                                  placeholder={field.placeholder || `Enter ${field.label}...`}
+                                  value={value !== undefined && value !== null ? Number(value) : 0}
+                                  disabled={field.readonly}
+                                  cssClass={hasError ? 'e-error' : ''}
+                                  change={(e: any) => handleChange(field.key, e.value)}
+                                />
+                              )}
+
+                              {field.controlType === 'select' && (
+                                <DropDownListComponent
+                                  dataSource={options}
+                                  fields={{ text: 'label', value: 'value' }}
+                                  placeholder={`Select ${field.label}...`}
+                                  allowFiltering={true}
+                                  value={value}
+                                  disabled={field.readonly}
+                                  cssClass={hasError ? 'e-error' : ''}
+                                  change={(e: any) => handleChange(field.key, e.value)}
+                                />
+                              )}
+
+                              {field.controlType === 'date' && (
+                                <DatePickerComponent
+                                  format="yyyy-MM-dd"
+                                  placeholder="Select Date..."
+                                  value={value ? new Date(value) : undefined}
+                                  disabled={field.readonly}
+                                  cssClass={hasError ? 'e-error' : ''}
+                                  change={(e: any) => handleChange(field.key, e.value ? e.value.toISOString().split('T')[0] : '')}
+                                />
+                              )}
+
+                              {field.controlType === 'datetime' && (
+                                <DateTimePickerComponent
+                                  placeholder="Select Date & Time..."
+                                  value={value ? new Date(value) : undefined}
+                                  disabled={field.readonly}
+                                  cssClass={hasError ? 'e-error' : ''}
+                                  change={(e: any) => handleChange(field.key, e.value ? e.value.toISOString() : '')}
+                                />
+                              )}
+
+                              {hasError && (
+                                <p className="text-[10px] text-red-600 dark:text-red-400 font-semibold mt-0.5">
+                                  {fieldError}
+                                </p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        /* Fallback form layout */
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {formFields.map(field => (
+            <div key={field.key}>
+              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">{field.label}</label>
+              <TextBoxComponent
+                value={formData[field.key] || ''}
+                change={(e: any) => handleChange(field.key, e.value)}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };

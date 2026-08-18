@@ -34,7 +34,7 @@ export const DynamicKanban: React.FC<DynamicKanbanProps> = ({ data, config }) =>
     <div className="w-full bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4">
       <div className="mb-3 flex items-center justify-between">
         <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Workflow Board</h4>
-        <span className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 rounded-full font-medium">
+        <span className="text-xs px-2.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-full font-medium border border-zinc-200 dark:border-zinc-700">
           Drag & Drop Cards
         </span>
       </div>

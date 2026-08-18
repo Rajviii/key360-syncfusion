@@ -3,6 +3,10 @@ import { projectsMockData } from '@/data/modules/projects';
 import { timesheetsMockData } from '@/data/modules/timesheets';
 import { employeesMockData } from '@/data/modules/employees';
 import { leavesMockData } from '@/data/modules/leaves';
+import { documentsMockData } from '@/data/modules/documents';
+import { projectReviewsMockData } from '@/data/modules/projectReviews';
+import { recordingsMockData } from '@/data/modules/recordings';
+import { opportunitiesMockData } from '@/data/modules/opportunities';
 
 export class MockProvider implements IDataProvider {
   id = 'mock';
@@ -33,6 +37,18 @@ export class MockProvider implements IDataProvider {
     if (!this.datasets.has('leaves') || this.datasets.get('leaves')?.length === 0) {
       this.datasets.set('leaves', [...leavesMockData]);
     }
+    if (!this.datasets.has('documents') || this.datasets.get('documents')?.length === 0) {
+      this.datasets.set('documents', [...documentsMockData]);
+    }
+    if (!this.datasets.has('project-reviews') || this.datasets.get('project-reviews')?.length === 0) {
+      this.datasets.set('project-reviews', [...projectReviewsMockData]);
+    }
+    if (!this.datasets.has('recordings') || this.datasets.get('recordings')?.length === 0) {
+      this.datasets.set('recordings', [...recordingsMockData]);
+    }
+    if (!this.datasets.has('opportunities') || this.datasets.get('opportunities')?.length === 0) {
+      this.datasets.set('opportunities', [...opportunitiesMockData]);
+    }
   }
 
   public registerModuleData(moduleId: string, data: any[]) {
@@ -47,6 +63,12 @@ export class MockProvider implements IDataProvider {
     }
 
     let records = [...(this.datasets.get(moduleId) || [])];
+
+    // Check if recordings data in dataset is outdated (old schema missing code)
+    if (moduleId === 'recordings' && records.length > 0 && !records[0].code) {
+      records = [...recordingsMockData];
+      this.datasets.set('recordings', records);
+    }
 
     // 1. Search Query Filter
     if (params.searchQuery) {
