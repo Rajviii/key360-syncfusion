@@ -12,9 +12,9 @@ export default function EditOpportunityClient({ params: initialParams }: { param
   const recordId = (params?.id || initialParams?.id) ? String(params?.id || initialParams?.id) : '';
 
   // Find record matching ID or code
-  const initialValues = opportunitiesMockData.find(
+  const initialValues: Record<string, any> = (opportunitiesMockData.find(
     r => String(r.id) === recordId || String(r.code).toLowerCase() === recordId.toLowerCase()
-  ) || opportunitiesMockData[0];
+  ) || opportunitiesMockData[0]) as Record<string, any>;
 
   const handleSave = (formData: Record<string, any>) => {
     console.log('Updated Opportunity:', formData);

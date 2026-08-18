@@ -12,9 +12,9 @@ export default function EditRecordingClient({ params: initialParams }: { params?
   const recordId = (params?.id || initialParams?.id) ? String(params?.id || initialParams?.id) : '';
 
   // Find record matching ID or code
-  const initialValues = recordingsMockData.find(
+  const initialValues: Record<string, any> = (recordingsMockData.find(
     r => String(r.id) === recordId || String(r.code).toLowerCase() === recordId.toLowerCase()
-  ) || recordingsMockData[0];
+  ) || recordingsMockData[0]) as Record<string, any>;
 
   const handleSave = (formData: Record<string, any>, actionType?: 'save' | 'saveAndNew' | 'saveAndClose') => {
     console.log('Updated Recording:', formData);

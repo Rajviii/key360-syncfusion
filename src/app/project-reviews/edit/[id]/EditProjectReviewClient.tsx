@@ -12,9 +12,9 @@ export default function EditProjectReviewClient({ params: initialParams }: { par
   const recordId = (params?.id || initialParams?.id) ? String(params?.id || initialParams?.id) : '';
 
   // Find record matching ID
-  const initialValues = projectReviewsMockData.find(
+  const initialValues: Record<string, any> = (projectReviewsMockData.find(
     r => String(r.id) === recordId || String(r.projectReviewId).toLowerCase() === recordId.toLowerCase()
-  ) || projectReviewsMockData[0];
+  ) || projectReviewsMockData[0]) as Record<string, any>;
 
   const handleSave = (formData: Record<string, any>) => {
     console.log('Updated Project Review:', formData);

@@ -12,9 +12,9 @@ export default function EditTimesheetClient({ params: initialParams }: { params?
   const recordId = (params?.id || initialParams?.id) ? String(params?.id || initialParams?.id) : '';
 
   // Find record matching ID
-  const initialValues = timesheetsMockData.find(
+  const initialValues: Record<string, any> = (timesheetsMockData.find(
     r => String(r.id) === recordId
-  ) || timesheetsMockData[0];
+  ) || timesheetsMockData[0]) as Record<string, any>;
 
   const handleSave = (formData: Record<string, any>) => {
     console.log('Updated Timesheet:', formData);
