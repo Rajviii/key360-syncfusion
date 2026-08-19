@@ -10,18 +10,52 @@ export const timesheetsMockData = [
     currentStatus: 'Submitted',
     statusBadge: 'Submitted',
     currentStatusComments: 'Submitted for manager weekly review.',
-    nextResponsiblePerson: 'Golding, Steven'
+    nextResponsiblePerson: 'Golding, Steven',
+    activitiesList: [
+      {
+        id: 'act-101-1',
+        activity: 'Dynamic UI Metadata & Form Engine Implementation',
+        assignmentName: 'Syncfusion Dynamic UI POC',
+        deliverable: 'Software Architecture Design',
+        billable: true,
+        mon: 8.00,
+        tue: 8.00,
+        wed: 8.00,
+        thu: 8.00,
+        fri: 8.00,
+        sat: 0.00,
+        sun: 0.00,
+        weekTotal: 40.00
+      }
+    ]
   },
   {
     id: 102,
     employee: 'Babariya, Dhruv',
-    weekEnding: '2026-08-23',
-    comments: 'Backend API endpoint integration and database query optimization.',
-    totalHours: 38.5,
+    weekEnding: '2026-09-27',
+    comments: 'Performance improvements implemented',
+    totalHours: 42.01,
     currentStatus: 'Approved',
     statusBadge: 'Approved',
     currentStatusComments: 'Reviewed and approved by Operations Lead.',
-    nextResponsiblePerson: 'Meyer, Corrie'
+    nextResponsiblePerson: 'Meyer, Corrie',
+    activitiesList: [
+      {
+        id: 'act-102-1',
+        activity: 'Performance improvements implemented',
+        assignmentName: 'AI ERP Modernization',
+        deliverable: 'Backend Query Optimization',
+        billable: true,
+        mon: 6.00,
+        tue: 9.01,
+        wed: 8.00,
+        thu: 5.00,
+        fri: 6.00,
+        sat: 3.00,
+        sun: 5.00,
+        weekTotal: 42.01
+      }
+    ]
   },
   {
     id: 103,
@@ -32,7 +66,24 @@ export const timesheetsMockData = [
     currentStatus: 'In Progress',
     statusBadge: 'In Progress',
     currentStatusComments: 'Pending final hour allocation check.',
-    nextResponsiblePerson: 'Prajapati, Rajvi'
+    nextResponsiblePerson: 'Prajapati, Rajvi',
+    activitiesList: [
+      {
+        id: 'act-103-1',
+        activity: 'Project Review audit and stakeholder alignment',
+        assignmentName: 'Cloud Migration Phase 2',
+        deliverable: 'Client Stakeholder Demo',
+        billable: true,
+        mon: 8.50,
+        tue: 8.50,
+        wed: 9.00,
+        thu: 8.00,
+        fri: 8.00,
+        sat: 0.00,
+        sun: 0.00,
+        weekTotal: 42.00
+      }
+    ]
   },
   {
     id: 104,
@@ -43,7 +94,8 @@ export const timesheetsMockData = [
     currentStatus: 'Approved',
     statusBadge: 'Approved',
     currentStatusComments: 'All billable hours verified.',
-    nextResponsiblePerson: 'Golding, Steven'
+    nextResponsiblePerson: 'Golding, Steven',
+    activitiesList: []
   },
   {
     id: 105,
@@ -54,7 +106,8 @@ export const timesheetsMockData = [
     currentStatus: 'Draft',
     statusBadge: 'Draft',
     currentStatusComments: 'Draft timesheet pending submission.',
-    nextResponsiblePerson: 'Prajapati, Rajvi'
+    nextResponsiblePerson: 'Prajapati, Rajvi',
+    activitiesList: []
   }
 ];
 
@@ -166,20 +219,21 @@ export const timesheetsMetadata: ModuleMetadata = {
       type: 'grid',
       defaultExpanded: true,
       nestedGridFields: [
-        { key: 'project', label: 'Project', controlType: 'text', width: 180 },
-        { key: 'taskActivity', label: 'Task / Activity', controlType: 'text', width: 200 },
-        { key: 'date', label: 'Date', controlType: 'date', width: 120 },
-        { key: 'hours', label: 'Hours', controlType: 'number', width: 90 },
-        { key: 'comments', label: 'Comments', controlType: 'text', width: 220 },
-        { key: 'employee', label: 'Employee', controlType: 'text', width: 140 },
-        { key: 'status', label: 'Status', controlType: 'text', width: 120 }
+        { key: 'activity', label: 'Activity', controlType: 'text', width: 220 },
+        { key: 'assignmentName', label: 'Assignment Name', controlType: 'text', width: 180 },
+        { key: 'deliverable', label: 'Deliverable', controlType: 'text', width: 180 },
+        { key: 'billable', label: 'Billable', controlType: 'checkbox', width: 90 },
+        { key: 'mon', label: 'Mon', controlType: 'number', width: 80, format: 'N2' },
+        { key: 'tue', label: 'Tue', controlType: 'number', width: 80, format: 'N2' },
+        { key: 'wed', label: 'Wed', controlType: 'number', width: 80, format: 'N2' },
+        { key: 'thu', label: 'Thu', controlType: 'number', width: 80, format: 'N2' },
+        { key: 'fri', label: 'Fri', controlType: 'number', width: 80, format: 'N2' },
+        { key: 'sat', label: 'Sat', controlType: 'number', width: 80, format: 'N2' },
+        { key: 'sun', label: 'Sun', controlType: 'number', width: 80, format: 'N2' },
+        { key: 'weekTotal', label: 'Week Total', controlType: 'number', width: 110, format: 'N2', aggregate: 'sum' }
       ],
       nestedGridData: [
-        { id: 'act-1', project: 'Syncfusion Dynamic UI POC', taskActivity: 'DynamicGrid & Form Engine', date: '2026-08-18', hours: 8.0, comments: 'Developed metadata-driven dynamic accordions and nested grids', employee: 'Prajapati, Rajvi', status: 'Completed' },
-        { id: 'act-2', project: 'Syncfusion Dynamic UI POC', taskActivity: 'Status History Modal', date: '2026-08-19', hours: 8.0, comments: 'Built status transition popup with searchable dropdowns', employee: 'Prajapati, Rajvi', status: 'Completed' },
-        { id: 'act-3', project: 'AI ERP Modernization', taskActivity: 'Timesheet Module Refactoring', date: '2026-08-20', hours: 8.0, comments: 'Refactored timesheet metadata and summary cards', employee: 'Prajapati, Rajvi', status: 'In Progress' },
-        { id: 'act-4', project: 'AI ERP Modernization', taskActivity: 'Unit & Integration Testing', date: '2026-08-21', hours: 8.0, comments: 'Executed tsc build checks and route validation', employee: 'Prajapati, Rajvi', status: 'Planned' },
-        { id: 'act-5', project: 'Cloud Migration Phase 2', taskActivity: 'Sprint Review & Demo', date: '2026-08-22', hours: 8.0, comments: 'Demonstrated modern WAPP layout to stakeholders', employee: 'Prajapati, Rajvi', status: 'Planned' }
+        { id: 'act-102-1', activity: 'Performance improvements implemented', assignmentName: 'AI ERP Modernization', deliverable: 'Backend Query Optimization', billable: true, mon: 6.00, tue: 9.01, wed: 8.00, thu: 5.00, fri: 6.00, sat: 3.00, sun: 5.00, weekTotal: 42.01 }
       ]
     },
     {

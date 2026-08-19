@@ -12,6 +12,7 @@ import {
   ChevronDown, ChevronUp, Save, ArrowLeft, Table, Plus, FileSpreadsheet, Download, Search, Copy
 } from 'lucide-react';
 import { DynamicGrid } from './DynamicGrid';
+import { CreateActivityModal, ActivityRecord } from '../CreateActivityModal';
 
 interface DynamicFormProps {
   fields: FieldSchema[];
@@ -44,6 +45,23 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       status: safeInitial.status || 'Issued',
       statusHistoryList: safeInitial.statusHistoryList || [],
       attachmentsList: safeInitial.attachmentsList || [],
+      activitiesList: safeInitial.activitiesList || safeInitial.activities || [
+        {
+          id: 'act-102-1',
+          activity: 'Performance improvements implemented',
+          assignmentName: 'AI ERP Modernization',
+          deliverable: 'Backend Query Optimization',
+          billable: true,
+          mon: 6.00,
+          tue: 9.01,
+          wed: 8.00,
+          thu: 5.00,
+          fri: 6.00,
+          sat: 3.00,
+          sun: 5.00,
+          weekTotal: 42.01
+        }
+      ],
       ...safeInitial
     };
     return defaults;
@@ -52,6 +70,10 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [topNotification, setTopNotification] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+
+  // Activity Modal State
+  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
+  const [selectedActivityRecord, setSelectedActivityRecord] = useState<ActivityRecord | null>(null);
 
   // Nested Grid search terms
   const [statusSearch, setStatusSearch] = useState('');
@@ -70,6 +92,73 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections(prev => ({ ...prev, [sectionId]: !prev[sectionId] }));
+  };
+
+  const handleOpenActivityModal = (record?: ActivityRecord | null) => {
+    setSelectedActivityRecord(record || null);
+    setIsActivityModalOpen(true);
+  };
+
+  const handleSaveActivityRecord = (activity: ActivityRecord, actionType: 'save' | 'saveAndClose' | 'saveAndNew') => {
+    setFormData(prev => {
+      const currentList: ActivityRecord[] = prev.activitiesList || [];
+      const index = currentList.findIndex(a => a.id === activity.id);
+      let updatedList: ActivityRecord[];
+
+      if (index >= 0) {
+        updatedList = [...currentList];
+        updatedList[index] = activity;
+      } else {
+        updatedList = [activity, ...currentList];
+      }
+
+      const calculatedTotalHours = updatedList.reduce((sum, item) => sum + (Number(item.weekTotal) || 0), 0);
+
+      return {
+        ...prev,
+        activitiesList: updatedList,
+        totalHours: Number(calculatedTotalHours.toFixed(2))
+      };
+    });
+
+    setTopNotification({
+      type: 'success',
+      message: `Activity record "${activity.activity}" saved. Total Hours updated to ${formData.totalHours || 0} hrs.`
+    });
+
+    if (actionType === 'saveAndClose' || actionType === 'save') {
+      setIsActivityModalOpen(false);
+    }
+  };
+
+  const handleCopyActivityRecord = (record: ActivityRecord) => {
+    const copiedRecord = {
+      ...record,
+      id: `act-${Date.now()}`,
+      activity: `${record.activity || 'Activity'} (Copy)`
+    };
+
+    setFormData(prev => {
+      const updatedList = [copiedRecord, ...(prev.activitiesList || [])];
+      const calculatedTotalHours = updatedList.reduce((sum, item) => sum + (Number(item.weekTotal) || 0), 0);
+      return {
+        ...prev,
+        activitiesList: updatedList,
+        totalHours: Number(calculatedTotalHours.toFixed(2))
+      };
+    });
+  };
+
+  const handleDeleteActivityRecord = (id: any) => {
+    setFormData(prev => {
+      const updatedList = (prev.activitiesList || []).filter((item: any) => item.id !== id && item.code !== id);
+      const calculatedTotalHours = updatedList.reduce((sum: number, item: any) => sum + (Number(item.weekTotal) || 0), 0);
+      return {
+        ...prev,
+        activitiesList: updatedList,
+        totalHours: Number(calculatedTotalHours.toFixed(2))
+      };
+    });
   };
 
   const formFields = fields.filter(f => f.showInForm !== false && f.key !== 'id');
@@ -234,7 +323,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
             className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-zinc-800 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded border border-zinc-300 dark:border-zinc-700 transition-colors cursor-pointer"
           >
             <Save className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <Plus className="w-3 h-3 text-emerald-600 dark:text-emerald-400 -ml-1" />
+            {/* <Plus className="w-3 h-3 text-emerald-600 dark:text-emerald-400 -ml-1" /> */}
             <span className="hidden sm:inline">Save & New</span>
           </button>
 
@@ -276,10 +365,10 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
       {topNotification && (
         <div
           className={`mb-4 p-3 rounded-lg border flex items-center justify-between gap-3 text-xs font-medium ${topNotification.type === 'error'
-              ? 'bg-red-50 dark:bg-red-950/80 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
-              : topNotification.type === 'success'
-                ? 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
-                : 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
+            ? 'bg-red-50 dark:bg-red-950/80 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
+            : topNotification.type === 'success'
+              ? 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
+              : 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
             }`}
         >
           <div className="flex items-center gap-2">
@@ -329,13 +418,28 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                 {isExpanded && (
                   <div className="p-3 bg-white dark:bg-zinc-900">
                     {sec.type === 'grid' ? (
-                      /* Generic DynamicGrid for Nested Form Sections (Status History & Attachments) */
+                      /* Generic DynamicGrid for Nested Form Sections (Activities, Status History & Attachments) */
                       <div className="w-full">
                         <DynamicGrid
                           fields={
                             sec.nestedGridFields ||
-                            (sec.id === 'sec-status-history'
+                            (sec.id === 'activities' || sec.id === 'sec-activities'
                               ? [
+                                { key: 'activity', label: 'Activity', controlType: 'text', width: 220 },
+                                { key: 'assignmentName', label: 'Assignment Name', controlType: 'text', width: 180 },
+                                { key: 'deliverable', label: 'Deliverable', controlType: 'text', width: 180 },
+                                { key: 'billable', label: 'Billable', controlType: 'checkbox', width: 90 },
+                                { key: 'mon', label: 'Mon', controlType: 'number', width: 80, format: 'N2' },
+                                { key: 'tue', label: 'Tue', controlType: 'number', width: 80, format: 'N2' },
+                                { key: 'wed', label: 'Wed', controlType: 'number', width: 80, format: 'N2' },
+                                { key: 'thu', label: 'Thu', controlType: 'number', width: 80, format: 'N2' },
+                                { key: 'fri', label: 'Fri', controlType: 'number', width: 80, format: 'N2' },
+                                { key: 'sat', label: 'Sat', controlType: 'number', width: 80, format: 'N2' },
+                                { key: 'sun', label: 'Sun', controlType: 'number', width: 80, format: 'N2' },
+                                { key: 'weekTotal', label: 'Week Total', controlType: 'number', width: 110, format: 'N2', aggregate: 'sum' }
+                              ]
+                              : sec.id === 'sec-status-history' || sec.id === 'statusHistory'
+                                ? [
                                   { key: 'status', label: 'Status', controlType: 'text', width: 120 },
                                   { key: 'nextResponsiblePerson', label: 'Next Responsible Person', controlType: 'text', width: 170 },
                                   { key: 'comment', label: 'Comment', controlType: 'text', width: 220 },
@@ -346,7 +450,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                                   { key: 'statusUser', label: 'Status User', controlType: 'text', width: 140 },
                                   { key: 'statusDate', label: 'Status Date', controlType: 'date', width: 120 }
                                 ]
-                              : [
+                                : [
                                   { key: 'fileDescription', label: 'File Description', controlType: 'text', width: 200 },
                                   { key: 'fileName', label: 'File Name', controlType: 'text', width: 200 },
                                   { key: 'attachment', label: 'Attachment', controlType: 'text', width: 130 },
@@ -355,9 +459,11 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                                 ])
                           }
                           data={
-                            sec.id === 'sec-status-history'
-                              ? formData.statusHistoryList || []
-                              : formData.attachmentsList || []
+                            sec.id === 'activities' || sec.id === 'sec-activities'
+                              ? formData.activitiesList || sec.nestedGridData || []
+                              : sec.id === 'sec-status-history' || sec.id === 'statusHistory'
+                                ? formData.statusHistoryList || sec.nestedGridData || []
+                                : formData.attachmentsList || sec.nestedGridData || []
                           }
                           config={{
                             pageSize: 5,
@@ -369,7 +475,28 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                             allowExcelExport: true,
                             allowPdfExport: true
                           }}
-                          onAddRecord={sec.id === 'sec-status-history' ? handleAddStatusEntry : handleAddAttachmentEntry}
+                          onAddRecord={
+                            sec.id === 'activities' || sec.id === 'sec-activities'
+                              ? () => handleOpenActivityModal()
+                              : sec.id === 'sec-status-history' || sec.id === 'statusHistory'
+                                ? handleAddStatusEntry
+                                : handleAddAttachmentEntry
+                          }
+                          onEditRecord={
+                            sec.id === 'activities' || sec.id === 'sec-activities'
+                              ? (row) => handleOpenActivityModal(row)
+                              : undefined
+                          }
+                          onCopyRecord={
+                            sec.id === 'activities' || sec.id === 'sec-activities'
+                              ? (row) => handleCopyActivityRecord(row)
+                              : undefined
+                          }
+                          onDeleteRecord={
+                            sec.id === 'activities' || sec.id === 'sec-activities'
+                              ? (id) => handleDeleteActivityRecord(id)
+                              : undefined
+                          }
                         />
                       </div>
                     ) : (
@@ -514,6 +641,16 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
           ))}
         </div>
       )}
+
+      {/* Create / Edit Timesheet Activity Modal Popup */}
+      <CreateActivityModal
+        isOpen={isActivityModalOpen}
+        onClose={() => setIsActivityModalOpen(false)}
+        initialActivity={selectedActivityRecord}
+        defaultEmployee={formData.employee}
+        defaultWeekEnding={formData.weekEnding}
+        onSaveActivity={handleSaveActivityRecord}
+      />
     </div>
   );
 };
