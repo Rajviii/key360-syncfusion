@@ -182,6 +182,97 @@ body {
   background-color: #007a4d !important;
 }
 
+/* 7. Syncfusion Gantt Chart Taskbars, Progress Bars, Milestones, Connectors & Selection (#007a4d) */
+.e-gantt .e-gantt-child-taskbar,
+.e-gantt .e-gantt-parent-taskbar,
+.e-gantt .e-gantt-manualparent-taskbar,
+.e-gantt .e-gantt-manualchild-taskbar,
+.e-gantt-child-taskbar,
+.e-gantt-parent-taskbar,
+.e-gantt-manualparent-taskbar,
+.e-gantt-manualchild-taskbar {
+  background-color: #007a4d !important;
+  border-color: #00623e !important;
+}
+
+.e-gantt .e-gantt-child-progressbar,
+.e-gantt .e-gantt-parent-progressbar,
+.e-gantt .e-gantt-manualparent-progressbar,
+.e-gantt .e-gantt-manualchild-progressbar,
+.e-gantt-child-progressbar,
+.e-gantt-parent-progressbar,
+.e-gantt-manualparent-progressbar,
+.e-gantt-manualchild-progressbar {
+  background-color: #005234 !important;
+  border-color: #003d27 !important;
+}
+
+.e-gantt .e-gantt-milestone,
+.e-gantt-milestone {
+  background-color: #007a4d !important;
+  border-color: #00623e !important;
+}
+
+.e-gantt .e-milestone-top,
+.e-milestone-top {
+  border-bottom-color: #007a4d !important;
+}
+
+.e-gantt .e-milestone-bottom,
+.e-milestone-bottom {
+  border-top-color: #007a4d !important;
+}
+
+/* Connector Lines & Dependency Arrows */
+.e-gantt .e-line,
+.e-gantt .e-connector-line,
+.e-gantt .e-connector-line-container .e-line,
+.e-gantt-chart .e-line,
+.e-gantt-chart .e-connector-line,
+.e-gantt-chart .e-connector-line-container .e-line {
+  border-color: #007a4d !important;
+  background-color: #007a4d !important;
+}
+
+.e-gantt .e-connector-line-right-arrow,
+.e-gantt .e-connector-line-left-arrow,
+.e-gantt-chart .e-connector-line-right-arrow,
+.e-gantt-chart .e-connector-line-left-arrow {
+  border-left-color: #007a4d !important;
+  border-right-color: #007a4d !important;
+  color: #007a4d !important;
+}
+
+/* Gantt Chart Row Selection Background */
+.e-gantt .e-gantt-chart .e-selection-background,
+.e-gantt .e-gantt-chart .e-active,
+.e-gantt .e-treegrid .e-active,
+.e-gantt .e-grid .e-active,
+.e-gantt .e-row.e-active,
+.e-gantt .e-row.e-active .e-rowcell {
+  background-color: rgba(0, 122, 77, 0.15) !important;
+}
+
+/* Gantt Taskbar Active / Selected Outline */
+.e-gantt-child-taskbar.e-gantt-active-taskbar,
+.e-gantt-parent-taskbar.e-gantt-active-taskbar,
+.e-gantt-milestone.e-gantt-active-milestone {
+  box-shadow: 0 0 0 2px rgba(0, 122, 77, 0.6) !important;
+  border-color: #004d30 !important;
+}
+
+/* Gantt Tree Grid Expand / Collapse Icons */
+.e-gantt .e-treegrid .e-treecell .e-treegridexpand,
+.e-gantt .e-treegrid .e-treecell .e-treegridcollapse {
+  color: #007a4d !important;
+}
+
+/* Gantt Splitter Line */
+.e-gantt .e-splitter .e-split-bar.e-split-bar-hover,
+.e-gantt .e-splitter .e-split-bar.e-split-bar-active {
+  background-color: #007a4d !important;
+}
+
 /* ==========================================================================
    Syncfusion Deep Dark Theme Overrides & Polish (Scoped strictly to .dark)
    ========================================================================== */
@@ -324,6 +415,15 @@ body {
   background-color: #18181b !important;
   border-color: #27272a !important;
   color: #f4f4f5 !important;
+}
+
+.dark .e-gantt .e-gantt-chart .e-selection-background,
+.dark .e-gantt .e-gantt-chart .e-active,
+.dark .e-gantt .e-treegrid .e-active,
+.dark .e-gantt .e-grid .e-active,
+.dark .e-gantt .e-row.e-active,
+.dark .e-gantt .e-row.e-active .e-rowcell {
+  background-color: rgba(0, 122, 77, 0.25) !important;
 }
 
 /* Kanban Board Dark Styling */

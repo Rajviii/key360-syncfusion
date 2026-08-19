@@ -63,7 +63,7 @@ export const DynamicGantt: React.FC<DynamicGanttProps> = ({ data, config }) => {
 
     return (
       <div className="flex items-center gap-2 py-0.5">
-        <div className="w-6 h-6 rounded-full bg-blue-600 dark:bg-blue-500 text-white font-semibold text-[10px] flex items-center justify-center shadow-xs shrink-0">
+        <div className="w-6 h-6 rounded-full bg-[#007a4d] text-white font-semibold text-[10px] flex items-center justify-center shadow-xs shrink-0">
           {initials}
         </div>
         <div className="flex flex-col min-w-0">
@@ -89,8 +89,8 @@ export const DynamicGantt: React.FC<DynamicGanttProps> = ({ data, config }) => {
       colorClasses = 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-800';
       dotColor = 'bg-emerald-500';
     } else if (status === 'In Progress') {
-      colorClasses = 'bg-blue-50 text-blue-700 border-blue-300 dark:bg-blue-950/80 dark:text-blue-300 dark:border-blue-800';
-      dotColor = 'bg-blue-500';
+      colorClasses = 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-800';
+      dotColor = 'bg-[#007a4d]';
     } else if (status === 'Open' || status === 'Planning') {
       colorClasses = 'bg-rose-50 text-rose-700 border-rose-300 dark:bg-rose-950/80 dark:text-rose-300 dark:border-rose-800';
       dotColor = 'bg-rose-500';
@@ -166,7 +166,7 @@ export const DynamicGantt: React.FC<DynamicGanttProps> = ({ data, config }) => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs px-2.5 py-1 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 rounded-md font-semibold border border-blue-200 dark:border-blue-800">
+          <span className="text-xs px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 rounded-md font-semibold border border-emerald-200 dark:border-emerald-800">
             WBS Level View
           </span>
         </div>
