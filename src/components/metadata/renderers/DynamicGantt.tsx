@@ -199,7 +199,7 @@ export const DynamicGantt: React.FC<DynamicGanttProps> = ({ data, config }) => {
           }}
         >
           <ColumnsDirective>
-            <ColumnDirective field={wbsCode} headerText="WBS ID" width="90" />
+            <ColumnDirective field={wbsCode} headerText="WBS ID" width="90" isPrimaryKey={true} />
             <ColumnDirective field={taskName} headerText="Task / Product Release" width="230" />
             <ColumnDirective field="assignee" headerText="Assignee" width="170" template={assigneeTemplate} />
             <ColumnDirective field="status" headerText="Status" width="120" template={statusTemplate} />

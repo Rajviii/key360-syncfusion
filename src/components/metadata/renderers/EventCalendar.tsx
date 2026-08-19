@@ -687,7 +687,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({ data: initialLeave
                 <div className="unplanned-text-containers p-2">
                   <GridComponent ref={gridObj} dataSource={extend([], filteredData.unPlanned, undefined, true)}>
                     <ColumnsDirective>
-                      <ColumnDirective field='Subject' headerText="Event / Request" width='140' textAlign="Left" />
+                      <ColumnDirective field='Subject' headerText="Event / Request" width='140' textAlign="Left" isPrimaryKey={true} />
                       <ColumnDirective field='StartTime' headerText="Date" width='120' format={'dd MMM yyyy'} />
                     </ColumnsDirective>
                   </GridComponent>
