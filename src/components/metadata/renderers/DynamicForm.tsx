@@ -407,222 +407,224 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
                   <span className="text-xs font-bold text-white tracking-wide">
                     {sec.title}
                   </span>
-                  {isExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-white" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-white" />
-                  )}
+                  <ChevronDown className={`w-4 h-4 text-white transition-transform duration-300 ease-in-out ${isExpanded ? 'rotate-180' : 'rotate-0'}`} />
                 </button>
 
-                {/* Section Content */}
-                {isExpanded && (
-                  <div className="p-3 bg-white dark:bg-zinc-900">
-                    {sec.type === 'grid' ? (
-                      /* Generic DynamicGrid for Nested Form Sections (Activities, Status History & Attachments) */
-                      <div className="w-full">
-                        <DynamicGrid
-                          fields={
-                            sec.nestedGridFields ||
-                            (sec.id === 'activities' || sec.id === 'sec-activities'
-                              ? [
-                                { key: 'activity', label: 'Activity', controlType: 'text', width: 220 },
-                                { key: 'assignmentName', label: 'Assignment Name', controlType: 'text', width: 180 },
-                                { key: 'deliverable', label: 'Deliverable', controlType: 'text', width: 180 },
-                                { key: 'billable', label: 'Billable', controlType: 'checkbox', width: 90 },
-                                { key: 'mon', label: 'Mon', controlType: 'number', width: 80, format: 'N2' },
-                                { key: 'tue', label: 'Tue', controlType: 'number', width: 80, format: 'N2' },
-                                { key: 'wed', label: 'Wed', controlType: 'number', width: 80, format: 'N2' },
-                                { key: 'thu', label: 'Thu', controlType: 'number', width: 80, format: 'N2' },
-                                { key: 'fri', label: 'Fri', controlType: 'number', width: 80, format: 'N2' },
-                                { key: 'sat', label: 'Sat', controlType: 'number', width: 80, format: 'N2' },
-                                { key: 'sun', label: 'Sun', controlType: 'number', width: 80, format: 'N2' },
-                                { key: 'weekTotal', label: 'Week Total', controlType: 'number', width: 110, format: 'N2', aggregate: 'sum' }
-                              ]
-                              : sec.id === 'sec-status-history' || sec.id === 'statusHistory'
+                {/* Animated Section Content Container */}
+                <div
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="p-3 bg-white dark:bg-zinc-900">
+                      {sec.type === 'grid' ? (
+                        /* Generic DynamicGrid for Nested Form Sections (Activities, Status History & Attachments) */
+                        <div className="w-full">
+                          <DynamicGrid
+                            fields={
+                              sec.nestedGridFields ||
+                              (sec.id === 'activities' || sec.id === 'sec-activities'
                                 ? [
-                                  { key: 'status', label: 'Status', controlType: 'text', width: 120 },
-                                  { key: 'nextResponsiblePerson', label: 'Next Responsible Person', controlType: 'text', width: 170 },
-                                  { key: 'comment', label: 'Comment', controlType: 'text', width: 220 },
-                                  { key: 'sendMail', label: 'Send Mail?', controlType: 'checkbox', width: 100 },
-                                  { key: 'sendAttachments', label: 'Send Attachments?', controlType: 'checkbox', width: 140 },
-                                  { key: 'sendPrevAttachments', label: 'Send Previous Status Attachm', controlType: 'checkbox', width: 200 },
-                                  { key: 'location', label: 'Location', controlType: 'text', width: 140 },
-                                  { key: 'statusUser', label: 'Status User', controlType: 'text', width: 140 },
-                                  { key: 'statusDate', label: 'Status Date', controlType: 'date', width: 120 }
-                                ]
+                                    { key: 'activity', label: 'Activity', controlType: 'text', width: 220 },
+                                    { key: 'assignmentName', label: 'Assignment Name', controlType: 'text', width: 180 },
+                                    { key: 'deliverable', label: 'Deliverable', controlType: 'text', width: 180 },
+                                    { key: 'billable', label: 'Billable', controlType: 'checkbox', width: 90 },
+                                    { key: 'mon', label: 'Mon', controlType: 'number', width: 80, format: 'N2' },
+                                    { key: 'tue', label: 'Tue', controlType: 'number', width: 80, format: 'N2' },
+                                    { key: 'wed', label: 'Wed', controlType: 'number', width: 80, format: 'N2' },
+                                    { key: 'thu', label: 'Thu', controlType: 'number', width: 80, format: 'N2' },
+                                    { key: 'fri', label: 'Fri', controlType: 'number', width: 80, format: 'N2' },
+                                    { key: 'sat', label: 'Sat', controlType: 'number', width: 80, format: 'N2' },
+                                    { key: 'sun', label: 'Sun', controlType: 'number', width: 80, format: 'N2' },
+                                    { key: 'weekTotal', label: 'Week Total', controlType: 'number', width: 110, format: 'N2', aggregate: 'sum' }
+                                  ]
+                                : sec.id === 'sec-status-history' || sec.id === 'statusHistory'
+                                ? [
+                                    { key: 'status', label: 'Status', controlType: 'text', width: 120 },
+                                    { key: 'nextResponsiblePerson', label: 'Next Responsible Person', controlType: 'text', width: 170 },
+                                    { key: 'comment', label: 'Comment', controlType: 'text', width: 220 },
+                                    { key: 'sendMail', label: 'Send Mail?', controlType: 'checkbox', width: 100 },
+                                    { key: 'sendAttachments', label: 'Send Attachments?', controlType: 'checkbox', width: 140 },
+                                    { key: 'sendPrevAttachments', label: 'Send Previous Status Attachm', controlType: 'checkbox', width: 200 },
+                                    { key: 'location', label: 'Location', controlType: 'text', width: 140 },
+                                    { key: 'statusUser', label: 'Status User', controlType: 'text', width: 140 },
+                                    { key: 'statusDate', label: 'Status Date', controlType: 'date', width: 120 }
+                                  ]
                                 : [
-                                  { key: 'fileDescription', label: 'File Description', controlType: 'text', width: 200 },
-                                  { key: 'fileName', label: 'File Name', controlType: 'text', width: 200 },
-                                  { key: 'attachment', label: 'Attachment', controlType: 'text', width: 130 },
-                                  { key: 'dateCreated', label: 'Date Created', controlType: 'date', width: 130 },
-                                  { key: 'createdBy', label: 'Created By', controlType: 'text', width: 150 }
-                                ])
-                          }
-                          data={
-                            sec.id === 'activities' || sec.id === 'sec-activities'
-                              ? formData.activitiesList || sec.nestedGridData || []
-                              : sec.id === 'sec-status-history' || sec.id === 'statusHistory'
+                                    { key: 'fileDescription', label: 'File Description', controlType: 'text', width: 200 },
+                                    { key: 'fileName', label: 'File Name', controlType: 'text', width: 200 },
+                                    { key: 'attachment', label: 'Attachment', controlType: 'text', width: 130 },
+                                    { key: 'dateCreated', label: 'Date Created', controlType: 'date', width: 130 },
+                                    { key: 'createdBy', label: 'Created By', controlType: 'text', width: 150 }
+                                  ])
+                            }
+                            data={
+                              sec.id === 'activities' || sec.id === 'sec-activities'
+                                ? formData.activitiesList || sec.nestedGridData || []
+                                : sec.id === 'sec-status-history' || sec.id === 'statusHistory'
                                 ? formData.statusHistoryList || sec.nestedGridData || []
                                 : formData.attachmentsList || sec.nestedGridData || []
-                          }
-                          config={{
-                            pageSize: 5,
-                            allowPaging: true,
-                            allowSorting: true,
-                            allowFiltering: true,
-                            allowGrouping: true,
-                            allowColumnChooser: true,
-                            allowExcelExport: true,
-                            allowPdfExport: true
-                          }}
-                          onAddRecord={
-                            sec.id === 'activities' || sec.id === 'sec-activities'
-                              ? () => handleOpenActivityModal()
-                              : sec.id === 'sec-status-history' || sec.id === 'statusHistory'
+                            }
+                            config={{
+                              pageSize: 5,
+                              allowPaging: true,
+                              allowSorting: true,
+                              allowFiltering: true,
+                              allowGrouping: true,
+                              allowColumnChooser: true,
+                              allowExcelExport: true,
+                              allowPdfExport: true
+                            }}
+                            onAddRecord={
+                              sec.id === 'activities' || sec.id === 'sec-activities'
+                                ? () => handleOpenActivityModal()
+                                : sec.id === 'sec-status-history' || sec.id === 'statusHistory'
                                 ? handleAddStatusEntry
                                 : handleAddAttachmentEntry
-                          }
-                          onEditRecord={
-                            sec.id === 'activities' || sec.id === 'sec-activities'
-                              ? (row) => handleOpenActivityModal(row)
-                              : undefined
-                          }
-                          onCopyRecord={
-                            sec.id === 'activities' || sec.id === 'sec-activities'
-                              ? (row) => handleCopyActivityRecord(row)
-                              : undefined
-                          }
-                          onDeleteRecord={
-                            sec.id === 'activities' || sec.id === 'sec-activities'
-                              ? (id) => handleDeleteActivityRecord(id)
-                              : undefined
-                          }
-                        />
-                      </div>
-                    ) : (
-                      /* Responsive Form Fields Layout */
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        {sectionFields.map(field => {
-                          const value = formData[field.key] ?? field.defaultValue ?? '';
-                          const options = getFormOptionsForField(field);
-                          const isRequired = field.validation?.required || field.key === 'code';
-                          const fieldError = errors[field.key];
-                          const hasError = Boolean(fieldError);
+                            }
+                            onEditRecord={
+                              sec.id === 'activities' || sec.id === 'sec-activities'
+                                ? (row) => handleOpenActivityModal(row)
+                                : undefined
+                            }
+                            onCopyRecord={
+                              sec.id === 'activities' || sec.id === 'sec-activities'
+                                ? (row) => handleCopyActivityRecord(row)
+                                : undefined
+                            }
+                            onDeleteRecord={
+                              sec.id === 'activities' || sec.id === 'sec-activities'
+                                ? (id) => handleDeleteActivityRecord(id)
+                                : undefined
+                            }
+                          />
+                        </div>
+                      ) : (
+                        /* Responsive Form Fields Layout */
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {sectionFields.map(field => {
+                            const value = formData[field.key] ?? field.defaultValue ?? '';
+                            const options = getFormOptionsForField(field);
+                            const isRequired = field.validation?.required || field.key === 'code';
+                            const fieldError = errors[field.key];
+                            const hasError = Boolean(fieldError);
 
-                          const isFullWidth = field.controlType === 'textarea' || field.key === 'description';
+                            const isFullWidth = field.controlType === 'textarea' || field.key === 'description';
 
-                          return (
-                            <div
-                              key={field.key}
-                              className={`${isFullWidth ? 'md:col-span-2' : ''} ${hasError ? 'bg-red-50/50 p-1.5 rounded border border-red-200' : ''}`}
-                            >
-                              <label className="block text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                                {field.label} {isRequired && <span className="text-red-500 font-bold ml-0.5">*</span>}
-                              </label>
+                            return (
+                              <div
+                                key={field.key}
+                                className={`${isFullWidth ? 'md:col-span-2' : ''} ${hasError ? 'bg-red-50/50 p-1.5 rounded border border-red-200' : ''}`}
+                              >
+                                <label className="block text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                                  {field.label} {isRequired && <span className="text-red-500 font-bold ml-0.5">*</span>}
+                                </label>
 
-                              {/* Controls */}
-                              {field.controlType === 'text' && (
-                                <TextBoxComponent
-                                  placeholder={field.placeholder || `Enter ${field.label}...`}
-                                  value={value}
-                                  disabled={field.readonly}
-                                  cssClass={hasError ? 'e-error' : ''}
-                                  change={(e: any) => handleChange(field.key, e.value)}
-                                />
-                              )}
-
-                              {field.controlType === 'textarea' && (
-                                <TextBoxComponent
-                                  multiline={true}
-                                  htmlAttributes={{ rows: '3' }}
-                                  placeholder={field.placeholder || `Enter ${field.label}...`}
-                                  value={value}
-                                  disabled={field.readonly}
-                                  cssClass={hasError ? 'e-error' : ''}
-                                  change={(e: any) => handleChange(field.key, e.value)}
-                                />
-                              )}
-
-                              {field.controlType === 'checkbox' && (
-                                <div className="pt-1">
-                                  <CheckBoxComponent
-                                    label={field.label}
-                                    checked={Boolean(value)}
+                                {/* Controls */}
+                                {field.controlType === 'text' && (
+                                  <TextBoxComponent
+                                    placeholder={field.placeholder || `Enter ${field.label}...`}
+                                    value={value}
                                     disabled={field.readonly}
-                                    change={(e: any) => handleChange(field.key, e.checked)}
+                                    cssClass={hasError ? 'e-error' : ''}
+                                    change={(e: any) => handleChange(field.key, e.value)}
                                   />
-                                </div>
-                              )}
+                                )}
 
-                              {field.controlType === 'number' && (
-                                <NumericTextBoxComponent
-                                  format="n2"
-                                  placeholder={field.placeholder || `Enter ${field.label}...`}
-                                  value={value !== undefined && value !== null ? Number(value) : 0}
-                                  disabled={field.readonly}
-                                  cssClass={hasError ? 'e-error' : ''}
-                                  change={(e: any) => handleChange(field.key, e.value)}
-                                />
-                              )}
+                                {field.controlType === 'textarea' && (
+                                  <TextBoxComponent
+                                    multiline={true}
+                                    htmlAttributes={{ rows: '3' }}
+                                    placeholder={field.placeholder || `Enter ${field.label}...`}
+                                    value={value}
+                                    disabled={field.readonly}
+                                    cssClass={hasError ? 'e-error' : ''}
+                                    change={(e: any) => handleChange(field.key, e.value)}
+                                  />
+                                )}
 
-                              {field.controlType === 'currency' && (
-                                <NumericTextBoxComponent
-                                  format="c2"
-                                  currency="ZAR"
-                                  placeholder={field.placeholder || `Enter ${field.label}...`}
-                                  value={value !== undefined && value !== null ? Number(value) : 0}
-                                  disabled={field.readonly}
-                                  cssClass={hasError ? 'e-error' : ''}
-                                  change={(e: any) => handleChange(field.key, e.value)}
-                                />
-                              )}
+                                {field.controlType === 'checkbox' && (
+                                  <div className="pt-1">
+                                    <CheckBoxComponent
+                                      label={field.label}
+                                      checked={Boolean(value)}
+                                      disabled={field.readonly}
+                                      change={(e: any) => handleChange(field.key, e.checked)}
+                                    />
+                                  </div>
+                                )}
 
-                              {field.controlType === 'select' && (
-                                <DropDownListComponent
-                                  dataSource={options}
-                                  fields={{ text: 'label', value: 'value' }}
-                                  placeholder={`Select ${field.label}...`}
-                                  allowFiltering={true}
-                                  value={value}
-                                  disabled={field.readonly}
-                                  cssClass={hasError ? 'e-error' : ''}
-                                  change={(e: any) => handleChange(field.key, e.value)}
-                                />
-                              )}
+                                {field.controlType === 'number' && (
+                                  <NumericTextBoxComponent
+                                    format="n2"
+                                    placeholder={field.placeholder || `Enter ${field.label}...`}
+                                    value={value !== undefined && value !== null ? Number(value) : 0}
+                                    disabled={field.readonly}
+                                    cssClass={hasError ? 'e-error' : ''}
+                                    change={(e: any) => handleChange(field.key, e.value)}
+                                  />
+                                )}
 
-                              {field.controlType === 'date' && (
-                                <DatePickerComponent
-                                  format="yyyy-MM-dd"
-                                  placeholder="Select Date..."
-                                  value={value ? new Date(value) : undefined}
-                                  disabled={field.readonly}
-                                  cssClass={hasError ? 'e-error' : ''}
-                                  change={(e: any) => handleChange(field.key, e.value ? e.value.toISOString().split('T')[0] : '')}
-                                />
-                              )}
+                                {field.controlType === 'currency' && (
+                                  <NumericTextBoxComponent
+                                    format="c2"
+                                    currency="ZAR"
+                                    placeholder={field.placeholder || `Enter ${field.label}...`}
+                                    value={value !== undefined && value !== null ? Number(value) : 0}
+                                    disabled={field.readonly}
+                                    cssClass={hasError ? 'e-error' : ''}
+                                    change={(e: any) => handleChange(field.key, e.value)}
+                                  />
+                                )}
 
-                              {field.controlType === 'datetime' && (
-                                <DateTimePickerComponent
-                                  placeholder="Select Date & Time..."
-                                  value={value ? new Date(value) : undefined}
-                                  disabled={field.readonly}
-                                  cssClass={hasError ? 'e-error' : ''}
-                                  change={(e: any) => handleChange(field.key, e.value ? e.value.toISOString() : '')}
-                                />
-                              )}
+                                {field.controlType === 'select' && (
+                                  <DropDownListComponent
+                                    dataSource={options}
+                                    fields={{ text: 'label', value: 'value' }}
+                                    placeholder={`Select ${field.label}...`}
+                                    allowFiltering={true}
+                                    value={value}
+                                    disabled={field.readonly}
+                                    cssClass={hasError ? 'e-error' : ''}
+                                    change={(e: any) => handleChange(field.key, e.value)}
+                                  />
+                                )}
 
-                              {hasError && (
-                                <p className="text-[10px] text-red-600 dark:text-red-400 font-semibold mt-0.5">
-                                  {fieldError}
-                                </p>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                                {field.controlType === 'date' && (
+                                  <DatePickerComponent
+                                    format="yyyy-MM-dd"
+                                    placeholder="Select Date..."
+                                    value={value ? new Date(value) : undefined}
+                                    disabled={field.readonly}
+                                    cssClass={hasError ? 'e-error' : ''}
+                                    change={(e: any) => handleChange(field.key, e.value ? e.value.toISOString().split('T')[0] : '')}
+                                  />
+                                )}
+
+                                {field.controlType === 'datetime' && (
+                                  <DateTimePickerComponent
+                                    placeholder="Select Date & Time..."
+                                    value={value ? new Date(value) : undefined}
+                                    disabled={field.readonly}
+                                    cssClass={hasError ? 'e-error' : ''}
+                                    change={(e: any) => handleChange(field.key, e.value ? e.value.toISOString() : '')}
+                                  />
+                                )}
+
+                                {hasError && (
+                                  <p className="text-[10px] text-red-600 dark:text-red-400 font-semibold mt-0.5">
+                                    {fieldError}
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}

@@ -299,13 +299,15 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
               className="w-full px-3.5 py-2.5 bg-[#007a4d] hover:bg-[#00623e] flex items-center justify-between text-xs font-bold text-white tracking-wide transition-colors cursor-pointer text-left select-none"
             >
               <span>Categorisation</span>
-              {expandedSections.categorisation ? <ChevronUp className="w-4 h-4 text-white" /> : <ChevronDown className="w-4 h-4 text-white" />}
+              <ChevronDown className={`w-4 h-4 text-white transition-transform duration-300 ease-in-out ${expandedSections.categorisation ? 'rotate-180' : 'rotate-0'}`} />
             </button>
-            {expandedSections.categorisation && (
-              <div className="p-4 bg-white dark:bg-zinc-900 text-xs text-zinc-500">
-                Categorisation details and tag classifications.
+            <div className={`grid transition-all duration-300 ease-in-out ${expandedSections.categorisation ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'}`}>
+              <div className="overflow-hidden">
+                <div className="p-4 bg-white dark:bg-zinc-900 text-xs text-zinc-500">
+                  Categorisation details and tag classifications.
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Accordion 2: Timesheet Detail */}
@@ -316,37 +318,39 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
               className="w-full px-3.5 py-2.5 bg-[#007a4d] hover:bg-[#00623e] flex items-center justify-between text-xs font-bold text-white tracking-wide transition-colors cursor-pointer text-left select-none"
             >
               <span>Timesheet Detail</span>
-              {expandedSections.timesheetDetail ? <ChevronUp className="w-4 h-4 text-white" /> : <ChevronDown className="w-4 h-4 text-white" />}
+              <ChevronDown className={`w-4 h-4 text-white transition-transform duration-300 ease-in-out ${expandedSections.timesheetDetail ? 'rotate-180' : 'rotate-0'}`} />
             </button>
-            {expandedSections.timesheetDetail && (
-              <div className="p-4 bg-white dark:bg-zinc-900 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Employee Dropdown */}
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                    Employee
-                  </label>
-                  <DropDownListComponent
-                    dataSource={employeeOptions}
-                    fields={{ text: 'label', value: 'value' }}
-                    value={employee}
-                    placeholder="Please select an Employee"
-                    change={(e: any) => setEmployee(e.value)}
-                  />
-                </div>
+            <div className={`grid transition-all duration-300 ease-in-out ${expandedSections.timesheetDetail ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'}`}>
+              <div className="overflow-hidden">
+                <div className="p-4 bg-white dark:bg-zinc-900 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Employee Dropdown */}
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                      Employee
+                    </label>
+                    <DropDownListComponent
+                      dataSource={employeeOptions}
+                      fields={{ text: 'label', value: 'value' }}
+                      value={employee}
+                      placeholder="Please select an Employee"
+                      change={(e: any) => setEmployee(e.value)}
+                    />
+                  </div>
 
-                {/* Week Ending DatePicker */}
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                    Week Ending
-                  </label>
-                  <DatePickerComponent
-                    format="yyyy-MM-dd"
-                    value={weekEnding ? new Date(weekEnding) : undefined}
-                    change={(e: any) => setWeekEnding(e.value ? e.value.toISOString().split('T')[0] : '')}
-                  />
+                  {/* Week Ending DatePicker */}
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                      Week Ending
+                    </label>
+                    <DatePickerComponent
+                      format="yyyy-MM-dd"
+                      value={weekEnding ? new Date(weekEnding) : undefined}
+                      change={(e: any) => setWeekEnding(e.value ? e.value.toISOString().split('T')[0] : '')}
+                    />
+                  </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Accordion 3: Activity Detail */}
@@ -357,143 +361,145 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
               className="w-full px-3.5 py-2.5 bg-[#007a4d] hover:bg-[#00623e] flex items-center justify-between text-xs font-bold text-white tracking-wide transition-colors cursor-pointer text-left select-none"
             >
               <span>Activity Detail</span>
-              {expandedSections.activityDetail ? <ChevronUp className="w-4 h-4 text-white" /> : <ChevronDown className="w-4 h-4 text-white" />}
+              <ChevronDown className={`w-4 h-4 text-white transition-transform duration-300 ease-in-out ${expandedSections.activityDetail ? 'rotate-180' : 'rotate-0'}`} />
             </button>
-            {expandedSections.activityDetail && (
-              <div className="p-4 bg-white dark:bg-zinc-900 space-y-4">
-                {/* Top Row: Activity, Deliverable, Billable */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-                  {/* Activity Input */}
+            <div className={`grid transition-all duration-300 ease-in-out ${expandedSections.activityDetail ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'}`}>
+              <div className="overflow-hidden">
+                <div className="p-4 bg-white dark:bg-zinc-900 space-y-4">
+                  {/* Top Row: Activity, Deliverable, Billable */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                    {/* Activity Input */}
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                        Activity
+                      </label>
+                      <TextBoxComponent
+                        multiline={true}
+                        htmlAttributes={{ rows: '3' }}
+                        value={activity}
+                        placeholder="Enter activity description..."
+                        change={(e: any) => setActivity(e.value)}
+                      />
+                    </div>
+
+                    {/* Deliverable Dropdown */}
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                        Deliverable
+                      </label>
+                      <DropDownListComponent
+                        dataSource={deliverableOptions}
+                        fields={{ text: 'label', value: 'value' }}
+                        value={deliverable}
+                        placeholder="Please select a Deliverable"
+                        change={(e: any) => setDeliverable(e.value)}
+                      />
+                    </div>
+
+                    {/* Billable Checkbox */}
+                    <div className="pt-6">
+                      <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                        Billable
+                      </label>
+                      <CheckBoxComponent
+                        label=""
+                        checked={billable}
+                        change={(e: any) => setBillable(e.checked)}
+                        cssClass="e-primary"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Middle Row: Daily Hours Inputs (Mon, Tue, Wed, Thu, Fri, Sat, Sun) */}
                   <div>
-                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                      Activity
+                    <label className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 mb-2">
+                      Daily Hours Allocation
                     </label>
-                    <TextBoxComponent
-                      multiline={true}
-                      htmlAttributes={{ rows: '3' }}
-                      value={activity}
-                      placeholder="Enter activity description..."
-                      change={(e: any) => setActivity(e.value)}
-                    />
+                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Mon</label>
+                        <NumericTextBoxComponent
+                          format="n2"
+                          step={0.5}
+                          value={mon}
+                          change={(e: any) => setMon(Number(e.value) || 0)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Tue</label>
+                        <NumericTextBoxComponent
+                          format="n2"
+                          step={0.5}
+                          value={tue}
+                          change={(e: any) => setTue(Number(e.value) || 0)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Wed</label>
+                        <NumericTextBoxComponent
+                          format="n2"
+                          step={0.5}
+                          value={wed}
+                          change={(e: any) => setWed(Number(e.value) || 0)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Thu</label>
+                        <NumericTextBoxComponent
+                          format="n2"
+                          step={0.5}
+                          value={thu}
+                          change={(e: any) => setThu(Number(e.value) || 0)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Fri</label>
+                        <NumericTextBoxComponent
+                          format="n2"
+                          step={0.5}
+                          value={fri}
+                          change={(e: any) => setFri(Number(e.value) || 0)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Sat</label>
+                        <NumericTextBoxComponent
+                          format="n2"
+                          step={0.5}
+                          value={sat}
+                          change={(e: any) => setSat(Number(e.value) || 0)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Sun</label>
+                        <NumericTextBoxComponent
+                          format="n2"
+                          step={0.5}
+                          value={sun}
+                          change={(e: any) => setSun(Number(e.value) || 0)}
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Deliverable Dropdown */}
-                  <div>
-                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                      Deliverable
-                    </label>
-                    <DropDownListComponent
-                      dataSource={deliverableOptions}
-                      fields={{ text: 'label', value: 'value' }}
-                      value={deliverable}
-                      placeholder="Please select a Deliverable"
-                      change={(e: any) => setDeliverable(e.value)}
-                    />
-                  </div>
-
-                  {/* Billable Checkbox */}
-                  <div className="pt-6">
-                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                      Billable
-                    </label>
-                    <CheckBoxComponent
-                      label=""
-                      checked={billable}
-                      change={(e: any) => setBillable(e.checked)}
-                      cssClass="e-primary"
-                    />
-                  </div>
-                </div>
-
-                {/* Middle Row: Daily Hours Inputs (Mon, Tue, Wed, Thu, Fri, Sat, Sun) */}
-                <div>
-                  <label className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 mb-2">
-                    Daily Hours Allocation
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+                  {/* Bottom Row: Assignment Name */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Mon</label>
-                      <NumericTextBoxComponent
-                        format="n2"
-                        step={0.5}
-                        value={mon}
-                        change={(e: any) => setMon(Number(e.value) || 0)}
+                      <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                        Assignment Name
+                      </label>
+                      <DropDownListComponent
+                        dataSource={assignmentOptions}
+                        fields={{ text: 'label', value: 'value' }}
+                        value={assignmentName}
+                        placeholder="Please select an Assignment Name"
+                        change={(e: any) => setAssignmentName(e.value)}
                       />
                     </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Tue</label>
-                      <NumericTextBoxComponent
-                        format="n2"
-                        step={0.5}
-                        value={tue}
-                        change={(e: any) => setTue(Number(e.value) || 0)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Wed</label>
-                      <NumericTextBoxComponent
-                        format="n2"
-                        step={0.5}
-                        value={wed}
-                        change={(e: any) => setWed(Number(e.value) || 0)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Thu</label>
-                      <NumericTextBoxComponent
-                        format="n2"
-                        step={0.5}
-                        value={thu}
-                        change={(e: any) => setThu(Number(e.value) || 0)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Fri</label>
-                      <NumericTextBoxComponent
-                        format="n2"
-                        step={0.5}
-                        value={fri}
-                        change={(e: any) => setFri(Number(e.value) || 0)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Sat</label>
-                      <NumericTextBoxComponent
-                        format="n2"
-                        step={0.5}
-                        value={sat}
-                        change={(e: any) => setSat(Number(e.value) || 0)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Sun</label>
-                      <NumericTextBoxComponent
-                        format="n2"
-                        step={0.5}
-                        value={sun}
-                        change={(e: any) => setSun(Number(e.value) || 0)}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Row: Assignment Name */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
-                      Assignment Name
-                    </label>
-                    <DropDownListComponent
-                      dataSource={assignmentOptions}
-                      fields={{ text: 'label', value: 'value' }}
-                      value={assignmentName}
-                      placeholder="Please select an Assignment Name"
-                      change={(e: any) => setAssignmentName(e.value)}
-                    />
                   </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Accordion 4: Status History (Interactive DataGrid matching user screenshot) */}
@@ -504,27 +510,29 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
               className="w-full px-3.5 py-2.5 bg-[#007a4d] hover:bg-[#00623e] flex items-center justify-between text-xs font-bold text-white tracking-wide transition-colors cursor-pointer text-left select-none"
             >
               <span>Status History</span>
-              {expandedSections.statusHistory ? <ChevronUp className="w-4 h-4 text-white" /> : <ChevronDown className="w-4 h-4 text-white" />}
+              <ChevronDown className={`w-4 h-4 text-white transition-transform duration-300 ease-in-out ${expandedSections.statusHistory ? 'rotate-180' : 'rotate-0'}`} />
             </button>
-            {expandedSections.statusHistory && (
-              <div className="p-3 bg-white dark:bg-zinc-900">
-                <DynamicGrid
-                  fields={statusGridFields}
-                  data={statusHistoryList}
-                  config={{
-                    pageSize: 5,
-                    allowPaging: true,
-                    allowSorting: true,
-                    allowFiltering: true,
-                    allowGrouping: true,
-                    allowColumnChooser: true,
-                    allowExcelExport: true,
-                    allowPdfExport: true
-                  }}
-                  onAddRecord={handleAddStatusEntry}
-                />
+            <div className={`grid transition-all duration-300 ease-in-out ${expandedSections.statusHistory ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'}`}>
+              <div className="overflow-hidden">
+                <div className="p-3 bg-white dark:bg-zinc-900">
+                  <DynamicGrid
+                    fields={statusGridFields}
+                    data={statusHistoryList}
+                    config={{
+                      pageSize: 5,
+                      allowPaging: true,
+                      allowSorting: true,
+                      allowFiltering: true,
+                      allowGrouping: true,
+                      allowColumnChooser: true,
+                      allowExcelExport: true,
+                      allowPdfExport: true
+                    }}
+                    onAddRecord={handleAddStatusEntry}
+                  />
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Accordion 5: Attachments (Interactive DataGrid matching user screenshot) */}
@@ -535,27 +543,29 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
               className="w-full px-3.5 py-2.5 bg-[#007a4d] hover:bg-[#00623e] flex items-center justify-between text-xs font-bold text-white tracking-wide transition-colors cursor-pointer text-left select-none"
             >
               <span>Attachments</span>
-              {expandedSections.attachments ? <ChevronUp className="w-4 h-4 text-white" /> : <ChevronDown className="w-4 h-4 text-white" />}
+              <ChevronDown className={`w-4 h-4 text-white transition-transform duration-300 ease-in-out ${expandedSections.attachments ? 'rotate-180' : 'rotate-0'}`} />
             </button>
-            {expandedSections.attachments && (
-              <div className="p-3 bg-white dark:bg-zinc-900">
-                <DynamicGrid
-                  fields={attachmentsGridFields}
-                  data={attachmentsList}
-                  config={{
-                    pageSize: 5,
-                    allowPaging: true,
-                    allowSorting: true,
-                    allowFiltering: true,
-                    allowGrouping: true,
-                    allowColumnChooser: true,
-                    allowExcelExport: true,
-                    allowPdfExport: true
-                  }}
-                  onAddRecord={handleAddAttachmentEntry}
-                />
+            <div className={`grid transition-all duration-300 ease-in-out ${expandedSections.attachments ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'}`}>
+              <div className="overflow-hidden">
+                <div className="p-3 bg-white dark:bg-zinc-900">
+                  <DynamicGrid
+                    fields={attachmentsGridFields}
+                    data={attachmentsList}
+                    config={{
+                      pageSize: 5,
+                      allowPaging: true,
+                      allowSorting: true,
+                      allowFiltering: true,
+                      allowGrouping: true,
+                      allowColumnChooser: true,
+                      allowExcelExport: true,
+                      allowPdfExport: true
+                    }}
+                    onAddRecord={handleAddAttachmentEntry}
+                  />
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

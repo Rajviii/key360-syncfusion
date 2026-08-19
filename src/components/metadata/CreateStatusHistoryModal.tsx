@@ -128,97 +128,99 @@ export const CreateStatusHistoryModal: React.FC<CreateStatusHistoryModalProps> =
               className="w-full px-4 py-3 bg-zinc-50 dark:bg-zinc-800/60 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-between text-left cursor-pointer border-b border-zinc-200 dark:border-zinc-800/60"
             >
               <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">Status Details</span>
-              {statusDetailsExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+              <ChevronDown className={`w-4 h-4 text-zinc-400 transition-transform duration-300 ease-in-out ${statusDetailsExpanded ? 'rotate-180' : 'rotate-0'}`} />
             </button>
 
-            {statusDetailsExpanded && (
-              <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Status Field */}
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
-                    Status <span className="text-red-500 font-bold">*</span>
-                  </label>
-                  <DropDownListComponent
-                    dataSource={statusOptions}
-                    fields={{ text: 'label', value: 'value' }}
-                    value={status}
-                    change={(e: any) => setStatus(e.value)}
-                    placeholder="Please select a Status"
-                  />
-                </div>
+            <div className={`grid transition-all duration-300 ease-in-out ${statusDetailsExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'}`}>
+              <div className="overflow-hidden">
+                <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {/* Status Field */}
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
+                      Status <span className="text-red-500 font-bold">*</span>
+                    </label>
+                    <DropDownListComponent
+                      dataSource={statusOptions}
+                      fields={{ text: 'label', value: 'value' }}
+                      value={status}
+                      change={(e: any) => setStatus(e.value)}
+                      placeholder="Please select a Status"
+                    />
+                  </div>
 
-                {/* Next Responsible Person */}
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
-                    Next Responsible Person <span className="text-red-500 font-bold">*</span>
-                  </label>
-                  <DropDownListComponent
-                    dataSource={userOptions}
-                    fields={{ text: 'label', value: 'value' }}
-                    value={nextResponsiblePerson}
-                    change={(e: any) => setNextResponsiblePerson(e.value)}
-                  />
-                </div>
+                  {/* Next Responsible Person */}
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
+                      Next Responsible Person <span className="text-red-500 font-bold">*</span>
+                    </label>
+                    <DropDownListComponent
+                      dataSource={userOptions}
+                      fields={{ text: 'label', value: 'value' }}
+                      value={nextResponsiblePerson}
+                      change={(e: any) => setNextResponsiblePerson(e.value)}
+                    />
+                  </div>
 
-                {/* Next Due Date */}
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
-                    Next Due Date
-                  </label>
-                  <DatePickerComponent
-                    format="yyyy-MM-dd"
-                    value={nextDueDate ? new Date(nextDueDate) : undefined}
-                    change={(e: any) => setNextDueDate(e.value ? e.value.toISOString().split('T')[0] : '')}
-                  />
-                </div>
+                  {/* Next Due Date */}
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
+                      Next Due Date
+                    </label>
+                    <DatePickerComponent
+                      format="yyyy-MM-dd"
+                      value={nextDueDate ? new Date(nextDueDate) : undefined}
+                      change={(e: any) => setNextDueDate(e.value ? e.value.toISOString().split('T')[0] : '')}
+                    />
+                  </div>
 
-                {/* Comment (Full width) */}
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
-                    Comment
-                  </label>
-                  <TextBoxComponent
-                    multiline={true}
-                    htmlAttributes={{ rows: '3' }}
-                    value={comment}
-                    placeholder="Enter status transition details or client remarks..."
-                    change={(e: any) => setComment(e.value)}
-                  />
-                </div>
+                  {/* Comment (Full width) */}
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
+                      Comment
+                    </label>
+                    <TextBoxComponent
+                      multiline={true}
+                      htmlAttributes={{ rows: '3' }}
+                      value={comment}
+                      placeholder="Enter status transition details or client remarks..."
+                      change={(e: any) => setComment(e.value)}
+                    />
+                  </div>
 
-                {/* Checkboxes column */}
-                <div className="space-y-3 pt-2">
-                  <CheckBoxComponent
-                    label="Send Email?"
-                    checked={sendEmail}
-                    change={(e: any) => setSendEmail(e.checked)}
-                  />
-                  <CheckBoxComponent
-                    label="Send Attachments?"
-                    checked={sendAttachments}
-                    change={(e: any) => setSendAttachments(e.checked)}
-                  />
-                  <CheckBoxComponent
-                    label="Send Previous Status Attachments?"
-                    checked={sendPrevAttachments}
-                    change={(e: any) => setSendPrevAttachments(e.checked)}
-                  />
-                </div>
+                  {/* Checkboxes column */}
+                  <div className="space-y-3 pt-2">
+                    <CheckBoxComponent
+                      label="Send Email?"
+                      checked={sendEmail}
+                      change={(e: any) => setSendEmail(e.checked)}
+                    />
+                    <CheckBoxComponent
+                      label="Send Attachments?"
+                      checked={sendAttachments}
+                      change={(e: any) => setSendAttachments(e.checked)}
+                    />
+                    <CheckBoxComponent
+                      label="Send Previous Status Attachments?"
+                      checked={sendPrevAttachments}
+                      change={(e: any) => setSendPrevAttachments(e.checked)}
+                    />
+                  </div>
 
-                {/* Status User */}
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
-                    Status User <span className="text-red-500 font-bold">*</span>
-                  </label>
-                  <DropDownListComponent
-                    dataSource={userOptions}
-                    fields={{ text: 'label', value: 'value' }}
-                    value={statusUser}
-                    change={(e: any) => setStatusUser(e.value)}
-                  />
+                  {/* Status User */}
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1.5">
+                      Status User <span className="text-red-500 font-bold">*</span>
+                    </label>
+                    <DropDownListComponent
+                      dataSource={userOptions}
+                      fields={{ text: 'label', value: 'value' }}
+                      value={statusUser}
+                      change={(e: any) => setStatusUser(e.value)}
+                    />
+                  </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Section 2: Attachments Grid */}
@@ -232,27 +234,29 @@ export const CreateStatusHistoryModal: React.FC<CreateStatusHistoryModalProps> =
                 <Paperclip className="w-4 h-4 text-emerald-600" />
                 <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">Attachments</span>
               </div>
-              {attachmentsExpanded ? <ChevronUp className="w-4 h-4 text-zinc-400" /> : <ChevronDown className="w-4 h-4 text-zinc-400" />}
+              <ChevronDown className={`w-4 h-4 text-zinc-400 transition-transform duration-300 ease-in-out ${attachmentsExpanded ? 'rotate-180' : 'rotate-0'}`} />
             </button>
 
-            {attachmentsExpanded && (
-              <div className="p-4">
-                <GridComponent
-                  dataSource={mockAttachments}
-                  allowPaging={true}
-                  pageSettings={{ pageSize: 5 }}
-                  gridLines="Both"
-                >
-                  <ColumnsDirective>
-                    <ColumnDirective field="fileName" headerText="File Name" width="200" />
-                    <ColumnDirective field="attachment" headerText="Attachment" width="140" />
-                    <ColumnDirective field="comment" headerText="Comment" width="220" />
-                    <ColumnDirective field="dateCreated" headerText="Date Created" width="160" />
-                    <ColumnDirective field="createdBy" headerText="Created By" width="140" />
-                  </ColumnsDirective>
-                </GridComponent>
+            <div className={`grid transition-all duration-300 ease-in-out ${attachmentsExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'}`}>
+              <div className="overflow-hidden">
+                <div className="p-4">
+                  <GridComponent
+                    dataSource={mockAttachments}
+                    allowPaging={true}
+                    pageSettings={{ pageSize: 5 }}
+                    gridLines="Both"
+                  >
+                    <ColumnsDirective>
+                      <ColumnDirective field="fileName" headerText="File Name" width="200" />
+                      <ColumnDirective field="attachment" headerText="Attachment" width="140" />
+                      <ColumnDirective field="comment" headerText="Comment" width="220" />
+                      <ColumnDirective field="dateCreated" headerText="Date Created" width="160" />
+                      <ColumnDirective field="createdBy" headerText="Created By" width="140" />
+                    </ColumnsDirective>
+                  </GridComponent>
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
