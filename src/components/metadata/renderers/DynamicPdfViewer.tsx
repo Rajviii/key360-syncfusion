@@ -456,21 +456,18 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
   };
 
   return (
-    <div className="w-full bg-zinc-900 text-zinc-100 rounded-xl border border-zinc-800 p-3 shadow-xl space-y-3 font-sans">
+    <div className="w-full bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 rounded-xl border border-zinc-200 dark:border-zinc-800 p-3 shadow-xl space-y-3 font-sans">
       {/* Top Document Header & Server-Driven Metadata Action Bar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-2.5 border-b border-zinc-800">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-2.5 border-b border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-red-950/80 text-red-400 rounded-lg border border-red-800 shrink-0">
+          <div className="p-2 bg-red-50 dark:bg-red-950/80 text-red-600 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800 shrink-0">
             <FileText className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h4 className="text-sm font-bold text-zinc-100 tracking-tight">
+              <h4 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
                 Document Review: {title}
               </h4>
-              {/* <span className="text-[10px] font-mono px-2 py-0.5 bg-zinc-800 text-zinc-300 rounded border border-zinc-700">
-                Rev B (PDF4Net + Syncfusion)
-              </span> */}
             </div>
           </div>
         </div>
@@ -480,8 +477,8 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
           <button
             onClick={() => setLeftPaneOpen(!leftPaneOpen)}
             className={`px-2.5 py-1 text-xs font-medium rounded border transition-colors cursor-pointer flex items-center gap-1 ${leftPaneOpen
-              ? 'bg-zinc-800 text-zinc-200 border-zinc-700'
-              : 'bg-zinc-900 text-zinc-400 border-zinc-800'
+              ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border-zinc-300 dark:border-zinc-700'
+              : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800'
               }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -490,8 +487,8 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
           <button
             onClick={() => setRightPaneOpen(!rightPaneOpen)}
             className={`px-2.5 py-1 text-xs font-medium rounded border transition-colors cursor-pointer flex items-center gap-1 ${rightPaneOpen
-              ? 'bg-zinc-800 text-zinc-200 border-zinc-700'
-              : 'bg-zinc-900 text-zinc-400 border-zinc-800'
+              ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border-zinc-300 dark:border-zinc-700'
+              : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800'
               }`}
           >
             <Sliders className="w-3.5 h-3.5" />
@@ -511,14 +508,6 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
                 {action.label}
               </button>
             ))
-            // ) : (
-            //   // <button
-            //   //   onClick={() => setActiveModal('revision')}
-            //   //   className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded cursor-pointer"
-            //   // >
-            //   //   <Plus className="w-3.5 h-3.5" /> New Revision
-            //   // </button>
-            // )}
           )}
 
           <button
@@ -538,7 +527,7 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
 
           <button
             onClick={handleDownloadAnnotatedPdf}
-            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-zinc-300 bg-zinc-800 hover:bg-zinc-700 rounded border border-zinc-700 cursor-pointer"
+            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded border border-zinc-300 dark:border-zinc-700 cursor-pointer"
             title="Download PDF with embedded annotations"
           >
             <Download className="w-3.5 h-3.5" /> Download Annotated PDF
@@ -548,12 +537,12 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
 
       {/* Save Success / Status Toast Banner */}
       {saveToast && (
-        <div className="flex items-center justify-between gap-2 px-3 py-2 bg-emerald-950/95 text-emerald-200 border border-emerald-800 rounded-lg text-xs animate-in fade-in transition-all shadow-lg">
+        <div className="flex items-center justify-between gap-2 px-3 py-2 bg-emerald-50 dark:bg-emerald-950/95 text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 rounded-lg text-xs animate-in fade-in transition-all shadow-md">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+            <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span className="font-medium">{saveToast}</span>
           </div>
-          <button onClick={() => setSaveToast(null)} className="text-emerald-400 hover:text-white cursor-pointer">
+          <button onClick={() => setSaveToast(null)} className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-white cursor-pointer">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -563,12 +552,12 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
       <div className="flex flex-col lg:flex-row h-[720px] gap-2.5 overflow-hidden">
         {/* LEFT PANE: Hierarchical Comments Tree View with Checkboxes */}
         {showLeftTree && leftPaneOpen && (
-          <div className="w-full lg:w-72 flex flex-col bg-zinc-950 rounded-lg border border-zinc-800 shrink-0 overflow-hidden">
-            <div className="p-2.5 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
-              <span className="text-xs font-bold text-zinc-200 tracking-wide uppercase">
+          <div className="w-full lg:w-72 flex flex-col bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 shrink-0 overflow-hidden">
+            <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+              <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 tracking-wide uppercase">
                 Comments ({comments.length})
               </span>
-              <span className="text-[10px] text-zinc-400 font-mono">
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono">
                 Group: {groupBy}
               </span>
             </div>
@@ -582,22 +571,22 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
                     {/* Group Header */}
                     <button
                       onClick={() => toggleGroupExpand(groupKey)}
-                      className="w-full flex items-center gap-1.5 px-2 py-1 bg-zinc-900/90 hover:bg-zinc-800 rounded text-left font-semibold text-zinc-300 text-[11px] transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-1.5 px-2 py-1 bg-zinc-200/80 dark:bg-zinc-900/90 hover:bg-zinc-300/80 dark:hover:bg-zinc-800 rounded text-left font-semibold text-zinc-800 dark:text-zinc-300 text-[11px] transition-colors cursor-pointer"
                     >
                       {isExpanded ? (
-                        <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+                        <ChevronDown className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
                       ) : (
-                        <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                        <ChevronRight className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
                       )}
                       <span className="truncate">{groupKey}</span>
-                      <span className="ml-auto text-[10px] px-1.5 py-0.2 bg-zinc-800 text-zinc-400 rounded-full font-mono">
+                      <span className="ml-auto text-[10px] px-1.5 py-0.2 bg-zinc-300 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400 rounded-full font-mono">
                         {groupItems.length}
                       </span>
                     </button>
 
                     {/* Group Items */}
                     {isExpanded && (
-                      <div className="pl-2 space-y-1 border-l border-zinc-800/80 ml-2">
+                      <div className="pl-2 space-y-1 border-l border-zinc-300 dark:border-zinc-800/80 ml-2">
                         {groupItems.map(item => {
                           const isSelected = item.id === selectedCommentId;
                           return (
@@ -605,8 +594,8 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
                               key={item.id}
                               onClick={() => handleSelectComment(item)}
                               className={`flex items-start gap-1.5 p-1.5 rounded transition-all cursor-pointer ${isSelected
-                                ? 'bg-blue-950/80 border border-blue-600 text-white font-medium'
-                                : 'bg-zinc-900/50 hover:bg-zinc-800/80 border border-zinc-800/60 text-zinc-300'
+                                ? 'bg-blue-50 dark:bg-blue-950/80 border border-blue-500 text-blue-950 dark:text-white font-medium'
+                                : 'bg-white dark:bg-zinc-900/50 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-800/60 text-zinc-800 dark:text-zinc-300'
                                 }`}
                             >
                               {/* Checkbox for annotation layer visibility */}
@@ -614,13 +603,13 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
                                 <button
                                   type="button"
                                   onClick={e => handleToggleVisibility(item.id, e)}
-                                  className="mt-0.5 text-zinc-400 hover:text-blue-400 cursor-pointer shrink-0"
+                                  className="mt-0.5 text-zinc-400 hover:text-blue-500 cursor-pointer shrink-0"
                                   title={item.visible ? 'Hide annotation layer' : 'Show annotation layer'}
                                 >
                                   {item.visible ? (
-                                    <CheckSquare className="w-3.5 h-3.5 text-blue-400" />
+                                    <CheckSquare className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                                   ) : (
-                                    <Square className="w-3.5 h-3.5 text-zinc-600" />
+                                    <Square className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600" />
                                   )}
                                 </button>
                               )}
@@ -631,7 +620,7 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
                                     {item.subject}
                                   </span>
                                 </div>
-                                <p className="text-[10px] text-zinc-400 truncate mt-0.5 font-normal">
+                                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate mt-0.5 font-normal">
                                   {item.comment}
                                 </p>
                               </div>
@@ -648,22 +637,22 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
         )}
 
         {/* CENTER PANE: Document Viewer Canvas */}
-        <div className="flex-1 flex flex-col bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden min-w-0">
-          <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-900 border-b border-zinc-800 text-xs">
+        <div className="flex-1 flex flex-col bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden min-w-0">
+          <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-100 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 text-xs">
             <div className="flex items-center gap-2">
-              <PenTool className="w-4 h-4 text-blue-400" />
-              <span className="font-bold text-zinc-200">Document Viewer</span>
+              <PenTool className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span className="font-bold text-zinc-800 dark:text-zinc-200">Document Viewer</span>
             </div>
             <button
               onClick={() => setUseNativeViewer(!useNativeViewer)}
-              className="text-[11px] text-blue-400 hover:underline cursor-pointer font-medium"
+              className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline cursor-pointer font-medium"
             >
               {useNativeViewer ? 'Switch to Syncfusion PDF Suite' : 'Embedded Object Mode'}
             </button>
           </div>
 
           {!useNativeViewer ? (
-            <div className="w-full flex-1 h-full">
+            <div className="w-full flex-1 h-full bg-white dark:bg-zinc-900">
               <PdfViewerComponent
                 id="syncfusion_pdf_viewer"
                 ref={viewerRef}
@@ -706,7 +695,7 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
               </PdfViewerComponent>
             </div>
           ) : (
-            <div className="w-full flex-1 h-full bg-zinc-900 flex flex-col items-center justify-center">
+            <div className="w-full flex-1 h-full bg-zinc-100 dark:bg-zinc-900 flex flex-col items-center justify-center">
               <object data={savedPdfUrl || resolvedUrl} type="application/pdf" className="w-full h-full rounded">
                 <iframe src={savedPdfUrl || resolvedUrl} title={title} className="w-full h-full rounded border-0" />
               </object>
@@ -716,45 +705,45 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
 
         {/* RIGHT PANE: Properties Inspector Panel */}
         {showRightProperties && rightPaneOpen && (
-          <div className="w-full lg:w-72 flex flex-col bg-zinc-950 rounded-lg border border-zinc-800 shrink-0 overflow-hidden">
-            <div className="p-2.5 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
-              <span className="text-xs font-bold text-zinc-200 tracking-wide uppercase">
+          <div className="w-full lg:w-72 flex flex-col bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 shrink-0 overflow-hidden">
+            <div className="p-2.5 bg-zinc-100 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+              <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 tracking-wide uppercase">
                 Properties
               </span>
-              <Sliders className="w-3.5 h-3.5 text-zinc-400" />
+              <Sliders className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
             </div>
 
             <div className="flex-1 overflow-y-auto p-3 space-y-3.5 text-xs">
               {/* Reviewer / Author */}
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-zinc-700 dark:text-zinc-400 mb-1">
                   Author / Reviewer
                 </label>
                 <input
                   type="text"
                   value={propAuthor}
                   onChange={e => setPropAuthor(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-200 outline-none focus:border-blue-500 text-xs"
+                  className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded px-2.5 py-1.5 text-zinc-900 dark:text-zinc-200 outline-none focus:border-blue-500 text-xs"
                 />
               </div>
 
               {/* Title / Subject */}
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-zinc-700 dark:text-zinc-400 mb-1">
                   Title / Name
                 </label>
                 <input
                   type="text"
                   value={propSubject}
                   onChange={e => setPropSubject(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-200 outline-none focus:border-blue-500 text-xs font-mono"
+                  className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded px-2.5 py-1.5 text-zinc-900 dark:text-zinc-200 outline-none focus:border-blue-500 text-xs font-mono"
                 />
               </div>
 
               {/* Line Width & Color Grid */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  <label className="block text-[11px] font-semibold text-zinc-700 dark:text-zinc-400 mb-1">
                     Line Width
                   </label>
                   <input
@@ -763,12 +752,12 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
                     max="10"
                     value={propBorderWidth}
                     onChange={e => setPropBorderWidth(Number(e.target.value))}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-200 outline-none focus:border-blue-500 text-xs"
+                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded px-2.5 py-1.5 text-zinc-900 dark:text-zinc-200 outline-none focus:border-blue-500 text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                  <label className="block text-[11px] font-semibold text-zinc-700 dark:text-zinc-400 mb-1">
                     Color Palette
                   </label>
                   <div className="flex items-center gap-1.5 pt-1">
@@ -777,7 +766,7 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
                         key={c}
                         type="button"
                         onClick={() => setPropColor(c)}
-                        className={`w-5 h-5 rounded-full border cursor-pointer ${propColor === c ? 'border-white ring-2 ring-blue-500' : 'border-zinc-700'
+                        className={`w-5 h-5 rounded-full border cursor-pointer ${propColor === c ? 'border-blue-600 ring-2 ring-blue-500' : 'border-zinc-300 dark:border-zinc-700'
                           }`}
                         style={{ backgroundColor: c }}
                       />
@@ -788,13 +777,13 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
 
               {/* Comment Status (Configurable Dropdown) */}
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-zinc-700 dark:text-zinc-400 mb-1">
                   Comment Status
                 </label>
                 <select
                   value={propStatus}
                   onChange={e => setPropStatus(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5 text-zinc-200 outline-none cursor-pointer text-xs font-medium"
+                  className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded px-2 py-1.5 text-zinc-900 dark:text-zinc-200 outline-none cursor-pointer text-xs font-medium"
                 >
                   {allowedStatuses.map(opt => (
                     <option key={opt.value} value={opt.value}>
@@ -806,14 +795,14 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
 
               {/* Comment Details Text Area */}
               <div>
-                <label className="block text-[11px] font-semibold text-zinc-400 mb-1">
+                <label className="block text-[11px] font-semibold text-zinc-700 dark:text-zinc-400 mb-1">
                   Comment Text
                 </label>
                 <textarea
                   rows={4}
                   value={propCommentText}
                   onChange={e => setPropCommentText(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-zinc-200 outline-none focus:border-blue-500 text-xs leading-relaxed"
+                  className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded p-2 text-zinc-900 dark:text-zinc-200 outline-none focus:border-blue-500 text-xs leading-relaxed"
                 />
               </div>
 
@@ -832,23 +821,23 @@ export const DynamicPdfViewer: React.FC<DynamicPdfViewerProps> = ({
 
       {/* Dynamic Custom Action Modals */}
       {activeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl w-full max-w-md p-5 space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
-              <h3 className="text-sm font-bold text-zinc-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-2xl w-full max-w-md p-5 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-800">
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                 Action: {activeModal}
               </h3>
-              <button onClick={() => setActiveModal(null)} className="text-zinc-400 hover:text-white cursor-pointer">
+              <button onClick={() => setActiveModal(null)} className="text-zinc-400 hover:text-zinc-700 dark:hover:text-white cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
               Executing metadata-driven server action for PDF workflow sign-off and revision management.
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setActiveModal(null)}
-                className="px-3 py-1.5 text-xs text-zinc-400 hover:text-white bg-zinc-800 rounded cursor-pointer"
+                className="px-3 py-1.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 bg-zinc-100 dark:bg-zinc-800 rounded cursor-pointer"
               >
                 Cancel
               </button>

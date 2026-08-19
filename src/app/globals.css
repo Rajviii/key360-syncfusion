@@ -358,28 +358,28 @@ body {
 /* ==========================================================================
    Syncfusion Clean Icon-Only Toolbar Styling (Compact UI with Hover Tooltips)
    ========================================================================== */
-.e-toolbar .e-tbar-btn .e-tbar-btn-text {
+.e-grid .e-toolbar .e-tbar-btn .e-tbar-btn-text {
   display: none !important;
 }
 
-.e-toolbar {
+.e-grid .e-toolbar {
   display: flex !important;
   align-items: center !important;
 }
 
-.e-toolbar .e-toolbar-items {
+.e-grid .e-toolbar .e-toolbar-items {
   display: flex !important;
   align-items: center !important;
 }
 
-.e-toolbar .e-toolbar-item {
+.e-grid .e-toolbar .e-toolbar-item {
   display: inline-flex !important;
   align-items: center !important;
   height: 32px !important;
   margin: 0 2px !important;
 }
 
-.e-toolbar .e-tbar-btn {
+.e-grid .e-toolbar .e-tbar-btn {
   border-radius: 0.375rem !important;
   padding: 4px 8px !important;
   min-width: 32px !important;
@@ -390,30 +390,68 @@ body {
   transition: all 0.15s ease !important;
 }
 
-.e-toolbar .e-tbar-btn .e-btn-icon,
-.e-toolbar .e-tbar-btn .e-icons {
+.e-grid .e-toolbar .e-tbar-btn .e-btn-icon,
+.e-grid .e-toolbar .e-tbar-btn .e-icons {
   margin: 0 !important;
   padding: 0 !important;
   font-size: 14px !important;
 }
 
 /* Preserve text inside search input fields and dropdowns */
-.e-toolbar .e-search input,
-.e-toolbar .e-input-group input,
-.e-toolbar input,
-.e-toolbar select {
+.e-grid .e-toolbar .e-search input,
+.e-grid .e-toolbar .e-input-group input,
+.e-grid .e-toolbar input,
+.e-grid .e-toolbar select {
   display: inline-block !important;
   height: 28px !important;
   line-height: 28px !important;
 }
 
 /* ==========================================================================
-   Syncfusion PDF Viewer Adaptive Width Styles
+   Syncfusion PDF Viewer Adaptive Width & Light/Dark Theme Styles
    ========================================================================== */
 .e-pdfviewer,
 .e-pdfviewer .e-pv-toolbar,
 .e-pdfviewer .e-pv-viewer-container {
   width: 100% !important;
+}
+
+/* Light theme defaults for PDF Viewer toolbar */
+.e-pdfviewer .e-pv-toolbar,
+.e-pdfviewer .e-pv-secondary-toolbar,
+.e-pdfviewer .e-toolbar {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+.e-pdfviewer .e-tbar-btn,
+.e-pdfviewer .e-pv-toolbar .e-tbar-btn {
+  color: #334155 !important;
+}
+
+.e-pdfviewer .e-tbar-btn:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* Dark theme overrides for PDF Viewer toolbar */
+.dark .e-pdfviewer .e-pv-toolbar,
+.dark .e-pdfviewer .e-pv-secondary-toolbar,
+.dark .e-pdfviewer .e-toolbar {
+  background-color: #18181b !important;
+  color: #f4f4f5 !important;
+  border-color: #27272a !important;
+}
+
+.dark .e-pdfviewer .e-tbar-btn,
+.dark .e-pdfviewer .e-pv-toolbar .e-tbar-btn {
+  color: #d4d4d8 !important;
+}
+
+.dark .e-pdfviewer .e-tbar-btn:hover {
+  background-color: #27272a !important;
+  color: #ffffff !important;
 }
 
 /* ==========================================================================
