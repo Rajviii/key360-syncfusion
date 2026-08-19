@@ -125,12 +125,12 @@ export const DynamicGrid: React.FC<DynamicGridProps> = ({
   const toolbarItems: any[] = [
     {
       template: () => (
-        <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800/80 p-1 rounded-lg border border-zinc-200 dark:border-zinc-700/80 mr-2 my-0.5">
+        <div className="flex items-center gap-0.5 bg-zinc-100 dark:bg-zinc-800/80 p-0.5 rounded-lg border border-zinc-200 dark:border-zinc-700/80 mr-2 h-[32px] my-auto">
           <button
             type="button"
             onClick={() => setActiveInlineView('grid')}
             title="Grid View"
-            className={`px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer h-[24px] ${
               activeInlineView === 'grid'
                 ? 'bg-[#007a4d] text-white shadow-xs'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700'
@@ -152,7 +152,7 @@ export const DynamicGrid: React.FC<DynamicGridProps> = ({
               setActiveInlineView('chart');
             }}
             title="Chart View"
-            className={`px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer h-[24px] ${
               activeInlineView === 'chart'
                 ? 'bg-[#007a4d] text-white shadow-xs'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700'
@@ -165,7 +165,7 @@ export const DynamicGrid: React.FC<DynamicGridProps> = ({
             type="button"
             onClick={() => setActiveInlineView('gantt')}
             title="Gantt View"
-            className={`px-2.5 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer h-[24px] ${
               activeInlineView === 'gantt'
                 ? 'bg-[#007a4d] text-white shadow-xs'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700'

@@ -362,6 +362,23 @@ body {
   display: none !important;
 }
 
+.e-toolbar {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.e-toolbar .e-toolbar-items {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.e-toolbar .e-toolbar-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 32px !important;
+  margin: 0 2px !important;
+}
+
 .e-toolbar .e-tbar-btn {
   border-radius: 0.375rem !important;
   padding: 4px 8px !important;
@@ -386,6 +403,8 @@ body {
 .e-toolbar input,
 .e-toolbar select {
   display: inline-block !important;
+  height: 28px !important;
+  line-height: 28px !important;
 }
 
 /* ==========================================================================
